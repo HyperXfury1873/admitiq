@@ -1,0 +1,26 @@
+# Dependencies / builds
+node_modules/
+dist/
+build/
+*.egg-info/
+.eggs/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local demo artifacts
+examples/cross-language/token_from_*.txt
+*.tgz
+admitiq-landing/dist/
+
+# Push CI after: gh auth refresh -s workflow
+.github/workflows/

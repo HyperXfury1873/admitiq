@@ -1,0 +1,41 @@
+{
+  "name": "admitiq",
+  "version": "0.3.1",
+  "description": "AdmitiQ: signed, expiring, revocable tokens for QR codes and links. No AI, no required server.",
+  "main": "src/index.js",
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "exports": {
+    ".": "./src/index.js",
+    "./ec": "./src/ec.js",
+    "./express": "./src/express.js",
+    "./url": "./src/url.js",
+    "./stores/redisStore": "./src/stores/redisStore.js"
+  },
+  "scripts": {
+    "test": "node --test tests/core.test.js tests/ec.test.js tests/url.test.js"
+  },
+  "keywords": ["qr", "qrcode", "security", "tokens", "tickets", "attendance", "coupons"],
+  "license": "MIT",
+  "author": {
+    "name": "LogicLitz",
+    "url": "https://logiclitz.org"
+  },
+  "homepage": "https://logiclitz.org",
+  "engines": { "node": ">=16" },
+  "peerDependencies": {
+    "qrcode": ">=1.5.0"
+  },
+  "peerDependenciesMeta": {
+    "qrcode": { "optional": true }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/logiclitz/admitiq"
+  },
+  "bugs": {
+    "url": "https://github.com/logiclitz/admitiq/issues"
+  }
+}

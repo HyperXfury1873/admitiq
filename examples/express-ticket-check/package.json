@@ -1,0 +1,14 @@
+{
+  "name": "admitiq-express-ticket-check",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Tiny Express demo: issue and scan admitiq tickets",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.0",
+    "admitiq": "file:../../js"
+  }
+}
