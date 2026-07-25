@@ -14,6 +14,7 @@ That document covers:
 
 Quick links:
 
+- GitHub: https://github.com/HyperXfury1873/admitiq  
 - PyPI: https://pypi.org  
 - TestPyPI: https://test.pypi.org  
 - npm: https://www.npmjs.com  

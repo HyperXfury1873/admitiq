@@ -30,12 +30,12 @@ don't start Phase 2 infrastructure work until Phase 1 is actually published and 
 
 ## Phase 1 — Get it published and real
 
-- [x] **Repo structure decision: monorepo.** One `logiclitz/admitiq` repo with `python/`,
+- [x] **Repo structure decision: monorepo.** One `HyperXfury1873/admitiq` repo with `python/`,
       `js/`, shared `SECURITY.md` / PRD / landing. Cross-language compatibility is the
       product differentiator — splitting into two repos would split issues, CI, and the
       security doc that both packages must stay aligned with. Publish to PyPI and npm from
       the same tree (two packages, one source of truth).
-- [ ] Create the public GitHub repo (`logiclitz/admitiq`) and push this monorepo
+- [x] Create the public GitHub repo (`HyperXfury1873/admitiq`) and push this monorepo
 - [x] Add a root-level `LICENSE` file (MIT, matches what's declared in packaging metadata)
 - [x] Add a top-level `README.md` for the monorepo that links to both language-specific READMEs
 - [x] Set up GitHub Actions CI: run both test suites on every push/PR

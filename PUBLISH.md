@@ -8,7 +8,7 @@ Do **TestPyPI / npm dry-run first**. Do not skip account setup.
 
 ## Before you publish (once)
 
-1. Create the public GitHub repo: `https://github.com/logiclitz/admitiq`
+1. Create the public GitHub repo: `https://github.com/HyperXfury1873/admitiq`
 2. Push this monorepo (`python/`, `js/`, `docs/`, etc.)
 3. Confirm CI is green (`.github/workflows/ci.yml`)
 4. Version in both packages matches (currently **0.3.0**):

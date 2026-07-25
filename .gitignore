@@ -22,5 +22,3 @@ examples/cross-language/token_from_*.txt
 *.tgz
 admitiq-landing/dist/
 
-# Push CI after: gh auth refresh -s workflow
-.github/workflows/

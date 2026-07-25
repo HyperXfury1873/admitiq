@@ -104,12 +104,12 @@ const payload = await verify(token, "secret");
 console.log(payload.data);`;
 
 const DOC_LINKS = [
-  { href: "https://github.com/logiclitz/admitiq/blob/main/docs/what-is-admitiq.md", title: "What is AdmitiQ?", blurb: "Plain-English overview — start here if you're new." },
-  { href: "https://github.com/logiclitz/admitiq/blob/main/docs/getting-started.md", title: "Getting started", blurb: "Install, issue, verify, and make a QR in minutes." },
-  { href: "https://github.com/logiclitz/admitiq/blob/main/docs/python.md", title: "Python guide", blurb: "issue, URLs, QR, FastAPI, Flask, Redis, rotation." },
-  { href: "https://github.com/logiclitz/admitiq/blob/main/docs/javascript.md", title: "JavaScript guide", blurb: "issue, URLs, QR, Express, Redis, rotation." },
-  { href: "https://github.com/logiclitz/admitiq/blob/main/docs/delivering-tokens.md", title: "QR & URL delivery", blurb: "How to put tokens in QR codes and links." },
-  { href: "https://github.com/logiclitz/admitiq/blob/main/SECURITY.md", title: "Security model", blurb: "What it protects, what it doesn't, key rotation." },
+  { href: "https://github.com/HyperXfury1873/admitiq/blob/main/docs/what-is-admitiq.md", title: "What is AdmitiQ?", blurb: "Plain-English overview — start here if you're new." },
+  { href: "https://github.com/HyperXfury1873/admitiq/blob/main/docs/getting-started.md", title: "Getting started", blurb: "Install, issue, verify, and make a QR in minutes." },
+  { href: "https://github.com/HyperXfury1873/admitiq/blob/main/docs/python.md", title: "Python guide", blurb: "issue, URLs, QR, FastAPI, Flask, Redis, rotation." },
+  { href: "https://github.com/HyperXfury1873/admitiq/blob/main/docs/javascript.md", title: "JavaScript guide", blurb: "issue, URLs, QR, Express, Redis, rotation." },
+  { href: "https://github.com/HyperXfury1873/admitiq/blob/main/docs/delivering-tokens.md", title: "QR & URL delivery", blurb: "How to put tokens in QR codes and links." },
+  { href: "https://github.com/HyperXfury1873/admitiq/blob/main/SECURITY.md", title: "Security model", blurb: "What it protects, what it doesn't, key rotation." },
 ];
 
 const TUTORIAL_CASES = [
@@ -1446,7 +1446,7 @@ export default function AdmitiQLanding() {
         <div className="aq-nav-links">
           <a className="aq-nav-link" href="#tutorial">Tutorial</a>
           <a className="aq-nav-link" href="#docs">Docs</a>
-          <a className="aq-nav-link" href="https://github.com/logiclitz/admitiq" target="_blank" rel="noreferrer">GitHub</a>
+          <a className="aq-nav-link" href="https://github.com/HyperXfury1873/admitiq" target="_blank" rel="noreferrer">GitHub</a>
           <a className="aq-nav-link" href="https://logiclitz.org" target="_blank" rel="noreferrer">LogicLitz</a>
         </div>
       </nav>
@@ -1668,7 +1668,7 @@ export default function AdmitiQLanding() {
 
       <footer className="aq-footer">
         MIT licensed ·{" "}
-        <a href="https://github.com/logiclitz/admitiq">github.com/logiclitz/admitiq</a>
+        <a href="https://github.com/HyperXfury1873/admitiq">github.com/HyperXfury1873/admitiq</a>
         {" · a "}
         <a href="https://logiclitz.org" target="_blank" rel="noreferrer">LogicLitz</a> project
       </footer>

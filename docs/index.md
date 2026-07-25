@@ -16,4 +16,5 @@ Install / import name: **`admitiq`** (`pip install admitiq` / `npm install admit
 | [Publishing](publishing.md) | You’re releasing to npm / PyPI |
 | [Security](../SECURITY.md) | You need the honest threat model |
 
+Source: [https://github.com/HyperXfury1873/admitiq](https://github.com/HyperXfury1873/admitiq)  
 Project home: [https://logiclitz.org](https://logiclitz.org)

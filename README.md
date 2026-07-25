@@ -122,6 +122,10 @@ cd js && npm test
 
 ---
 
+## Source
+
+https://github.com/HyperXfury1873/admitiq
+
 ## License
 
 MIT © [LogicLitz](https://logiclitz.org)

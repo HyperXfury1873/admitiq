@@ -26,5 +26,5 @@ dev = ["pytest>=7.0", "fastapi>=0.100", "flask>=2.3", "httpx>=0.24"]
 
 [project.urls]
 Homepage = "https://logiclitz.org"
-Repository = "https://github.com/logiclitz/admitiq"
-Issues = "https://github.com/logiclitz/admitiq/issues"
+Repository = "https://github.com/HyperXfury1873/admitiq"
+Issues = "https://github.com/HyperXfury1873/admitiq/issues"
