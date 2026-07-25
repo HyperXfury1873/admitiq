@@ -17,7 +17,15 @@ When someone presents it, your app asks AdmitiQ:
 
 If any check fails, you reject the scan.
 
-Install it as the **`admitiq`** package (`pip install admitiq` / `npm install admitiq`).
+Install it as the **`admitiq`** package:
+
+```bash
+pip install admitiq
+npm install admitiq
+```
+
+Interactive walkthrough (issue, QR, scan, tamper):  
+**https://hyperxfury1873.github.io/admitiq/**
 
 ## Simple picture
 

@@ -25,6 +25,7 @@ redis = ["redis>=4.5"]
 dev = ["pytest>=7.0", "fastapi>=0.100", "flask>=2.3", "httpx>=0.24"]
 
 [project.urls]
-Homepage = "https://logiclitz.org"
+Homepage = "https://hyperxfury1873.github.io/admitiq/"
+Documentation = "https://github.com/HyperXfury1873/admitiq/tree/main/docs"
 Repository = "https://github.com/HyperXfury1873/admitiq"
 Issues = "https://github.com/HyperXfury1873/admitiq/issues"

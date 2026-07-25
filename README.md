@@ -4,7 +4,13 @@
 
 > Signed, expiring, revocable tokens for QR codes and links — so a scan can prove a code is real, still valid, and hasn’t already been used.
 
-Package name on pip/npm: **`admitiq`**.
+| | |
+|--|--|
+| **Try the interactive tutorial** | **https://hyperxfury1873.github.io/admitiq/** |
+| **Python** | [`pip install admitiq`](https://pypi.org/project/admitiq/) |
+| **JavaScript** | `npm install admitiq` (publish steps in [PUBLISH.md](PUBLISH.md) if the package is not live yet) |
+| **Source** | https://github.com/HyperXfury1873/admitiq |
+| **For AI assistants** | [llms.txt](llms.txt) |
 
 Most QR libraries only encode plain text. Anyone who screenshots the code can reuse it forever. **AdmitiQ** puts a small signed token *under* the QR or URL instead.
 
@@ -19,7 +25,7 @@ Works the same in **Python** and **JavaScript**. A token from one language verif
 
 ## 60-second start (pick one)
 
-### Python
+### Python (live on PyPI)
 
 ```bash
 pip install admitiq
@@ -37,6 +43,9 @@ print(payload["data"])  # {"ticket_id": "abc123"}
 
 ```bash
 npm install admitiq
+# If that fails because the package is not on npm yet:
+git clone https://github.com/HyperXfury1873/admitiq.git
+npm install ./admitiq/js
 ```
 
 ```javascript
@@ -47,13 +56,7 @@ const payload = await verify(token, "your-secret-key");
 console.log(payload.data); // { ticketId: "abc123" }
 ```
 
-> **Not published yet?** Install from this repo:
-> ```bash
-> pip install -e ./python
-> # or
-> npm install ./js
-> ```
-> Full publish steps: [docs/publishing.md](docs/publishing.md) · [PUBLISH.md](PUBLISH.md).
+Prefer learning visually? Open the [landing tutorial](https://hyperxfury1873.github.io/admitiq/) (issue → QR/URL → scan → tamper).
 
 ---
 
@@ -71,21 +74,30 @@ console.log(payload.data); // { ticketId: "abc123" }
 
 ---
 
+## When should you use AdmitiQ?
+
+Use it for **tickets, attendance QR codes, invite links, coupons**, or any short-lived proof that must not be forgeable or infinitely reusable.
+
+Do **not** use it as a full login system, payment processor, or media DRM.
+
+---
+
 ## Repo layout
 
 ```text
 admitiq/
-  python/          # PyPI package (admitiq)
+  python/          # PyPI package (admitiq) — live
   js/              # npm package (admitiq)
   docs/            # Beginner-friendly documentation
   examples/        # Express, Flask, cross-language demos
-  landing/         # AdmitiQLanding.jsx (keep in sync with admitiq-landing/src)
-  admitiq-landing/ # Vite preview app — run `npm run dev` here
+  admitiq-landing/ # Interactive tutorial (GitHub Pages)
+  landing/         # Mirror of AdmitiQLanding.jsx
+  llms.txt         # Machine-readable “when / how to use”
   SECURITY.md      # Threat model, rotation, privacy
-  PUBLISH.md       # How to publish to npm + PyPI
+  PUBLISH.md       # Maintainer: publish to npm + PyPI
 ```
 
-Preview the landing page:
+Local landing preview:
 
 ```bash
 cd admitiq-landing
@@ -93,9 +105,11 @@ npm install
 npm run dev
 ```
 
+How Pages hosting works: [docs/landing.md](docs/landing.md).
+
 ---
 
-## Documentation (start here if you’re new)
+## Documentation
 
 1. [What is AdmitiQ?](docs/what-is-admitiq.md)  
 2. [Getting started](docs/getting-started.md)  
@@ -104,9 +118,10 @@ npm run dev
 5. [QR & URL delivery](docs/delivering-tokens.md)  
 6. [Key rotation](docs/key-rotation.md)  
 7. [Security model](SECURITY.md)  
-8. [Publishing to npm & PyPI](docs/publishing.md)  
+8. [Landing page](docs/landing.md)  
+9. [Publishing (maintainers)](docs/publishing.md) · [PUBLISH.md](PUBLISH.md)  
 
-Also: [python/README.md](python/README.md) · [js/README.md](js/README.md)
+Also: [python/README.md](python/README.md) · [js/README.md](js/README.md) · [llms.txt](llms.txt)
 
 ---
 
@@ -121,10 +136,6 @@ cd js && npm test
 ```
 
 ---
-
-## Source
-
-https://github.com/HyperXfury1873/admitiq
 
 ## License
 

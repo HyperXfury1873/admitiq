@@ -1,40 +1,71 @@
 # Getting started
 
-Goal: create a token, verify it, and understand the result — in under 5 minutes.
+**Goal:** create a token, verify it, and understand the result — in under 5 minutes.
+
+**Prefer a visual tour?** Open the interactive tutorial first:  
+→ **https://hyperxfury1873.github.io/admitiq/**
+
+---
 
 ## 1. Install
 
-### Option A — from PyPI / npm (after publish)
+### Python (recommended — live on PyPI)
 
 ```bash
 pip install admitiq
-# or
+```
+
+Optional extras:
+
+```bash
+pip install "admitiq[qr]"      # QR image helpers
+pip install "admitiq[ec]"      # ES256
+pip install "admitiq[redis]"   # Redis single-use store
+```
+
+### JavaScript (Node)
+
+```bash
 npm install admitiq
 ```
 
-### Option B — from this repo (today)
+If the npm package is not published yet, clone and install the `js/` folder:
+
+```bash
+git clone https://github.com/HyperXfury1873/admitiq.git
+npm install ./admitiq/js
+```
+
+Optional peers:
+
+```bash
+npm install qrcode   # QR images
+npm install redis    # Redis single-use store
+```
+
+### From this repo (contributors)
 
 ```bash
 # Python
-cd python
-pip install -e ".[qr,ec,dev]"
+cd python && pip install -e ".[qr,ec,dev]"
 
 # JavaScript — from another Node project:
 npm install /absolute/path/to/admitiq/js
 ```
 
+---
+
 ## 2. Create a secret
 
 Pick a long random string. **Never put it in the QR code or in frontend JavaScript.**
 
-Examples:
-
-```bash
-# good enough for local demos
+```text
 your-secret-key-change-me-in-production
 ```
 
-In production, load it from an environment variable.
+In production, load it from an environment variable (for example `ADMITIQ_SECRET`).
+
+---
 
 ## 3. Issue a token (Python)
 
@@ -80,66 +111,47 @@ try {
 }
 ```
 
-## 6. (Optional) Put it in a URL or QR
+---
 
-**URL (built-in, no extra package):**
+## 6. Put it in a URL or QR (optional)
 
 ```python
-from admitiq import issue_url, token_from_url, verify
-url = issue_url("https://example.com/scan", {"ticket_id": "T-1001"}, 3600, "your-secret-key")
-payload = verify(token_from_url(url), secret="your-secret-key")
+from admitiq import issue_url
+
+link = issue_url(
+    "https://example.com/scan",
+    {"ticket_id": "T-1001"},
+    ttl_seconds=3600,
+    secret="your-secret-key",
+)
+print(link)  # https://example.com/scan?t=...
 ```
 
 ```javascript
-const { issueUrl, tokenFromUrl, verify } = require("admitiq");
-const url = issueUrl("https://example.com/scan", { ticketId: "T-1001" }, 3600, "your-secret-key");
-const payload = await verify(tokenFromUrl(url), "your-secret-key");
+const { issueUrl } = require("admitiq");
+const link = issueUrl("https://example.com/scan", { ticketId: "T-1001" }, 3600, "your-secret-key");
 ```
 
-**QR image** (needs `pip install admitiq[qr]` or `npm install qrcode`):
+More detail: [delivering-tokens.md](delivering-tokens.md).
 
-```python
-from admitiq import issue_qr
-issue_qr({"ticket_id": "T-1001"}, ttl_seconds=3600, secret="your-secret-key", output_path="ticket.png")
-```
+---
 
-```javascript
-const { issueQR } = require("admitiq");
-await issueQR({ ticketId: "T-1001" }, 3600, "your-secret-key", "ticket.png");
-```
+## 7. What to build next
 
-More: [delivering-tokens.md](delivering-tokens.md).
+| You want… | Go to… |
+|-----------|--------|
+| Full Python API | [python.md](python.md) |
+| Full JavaScript API | [javascript.md](javascript.md) |
+| Copy-paste demo apps | [../examples/README.md](../examples/README.md) |
+| Rotate secrets safely | [key-rotation.md](key-rotation.md) |
+| Threat model | [../SECURITY.md](../SECURITY.md) |
+| Interactive UI | [landing.md](landing.md) |
 
-## 7. What does a successful verify return?
-
-Something like:
-
-```json
-{
-  "iat": 1710000000,
-  "exp": 1710003600,
-  "jti": "unique-id-for-this-ticket",
-  "data": { "ticket_id": "T-1001", "name": "Priya" }
-}
-```
-
-- `data` — what you put in  
-- `jti` — unique id (use this for “already used” tracking)  
-- `exp` — unix expiry time  
-- `iat` — issued-at time  
+---
 
 ## Common mistakes
 
-| Mistake | Fix |
-|---------|-----|
-| Secret in the browser | Keep secrets on the server only |
-| Forgot `await` in JS | `verify` is async — always `await` it |
-| No revocation callback | Reuse is allowed unless you pass `is_revoked` / `isRevoked` |
-| Different secrets | Issue and verify must use the same secret (or a rotation list) |
-
-## Next
-
-- [Python guide](python.md)  
-- [JavaScript guide](javascript.md)  
-- [Key rotation](key-rotation.md)  
-- [Examples](../examples/README.md)
+1. Putting the **secret** in the browser or inside the QR — only the **token** goes there.  
+2. Using a short / guessable secret.  
+3. Expecting unlimited reuse — enable a revocation store for single-use tickets.  
+4. Mixing TestPyPI tokens with real PyPI (maintainers only — see [publishing.md](publishing.md)).

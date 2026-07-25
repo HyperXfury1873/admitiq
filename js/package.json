@@ -17,23 +17,35 @@
   "scripts": {
     "test": "node --test tests/core.test.js tests/ec.test.js tests/url.test.js"
   },
-  "keywords": ["qr", "qrcode", "security", "tokens", "tickets", "attendance", "coupons"],
+  "keywords": [
+    "qr",
+    "qrcode",
+    "security",
+    "tokens",
+    "tickets",
+    "attendance",
+    "coupons"
+  ],
   "license": "MIT",
   "author": {
     "name": "LogicLitz",
     "url": "https://logiclitz.org"
   },
-  "homepage": "https://logiclitz.org",
-  "engines": { "node": ">=16" },
+  "homepage": "https://hyperxfury1873.github.io/admitiq/",
+  "engines": {
+    "node": ">=16"
+  },
   "peerDependencies": {
     "qrcode": ">=1.5.0"
   },
   "peerDependenciesMeta": {
-    "qrcode": { "optional": true }
+    "qrcode": {
+      "optional": true
+    }
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/HyperXfury1873/admitiq"
+    "url": "git+https://github.com/HyperXfury1873/admitiq.git"
   },
   "bugs": {
     "url": "https://github.com/HyperXfury1873/admitiq/issues"

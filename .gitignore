@@ -22,3 +22,7 @@ examples/cross-language/token_from_*.txt
 *.tgz
 admitiq-landing/dist/
 
+# Secrets (never commit)
+*Recovery-Codes*
+.npmrc
+

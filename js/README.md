@@ -4,14 +4,21 @@
 
 Signed, expiring, revocable tokens for QR codes and links.
 
-> New here? Start with: [../docs/what-is-admitiq.md](../docs/what-is-admitiq.md)
+> New here? Start with the [interactive tutorial](https://hyperxfury1873.github.io/admitiq/) or [../docs/what-is-admitiq.md](../docs/what-is-admitiq.md).
 
 ## Install
 
 ```bash
 npm install admitiq
-```npm install qrcode   # optional: QR images
+npm install qrcode   # optional: QR images
 npm install redis    # optional: Redis single-use store
+```
+
+If the package is not on the npm registry yet:
+
+```bash
+git clone https://github.com/HyperXfury1873/admitiq.git
+npm install ./admitiq/js
 ```
 
 ## Tiny example
@@ -34,6 +41,8 @@ A Python app can verify this same token with the same secret (`pip install admit
 | Topic | Link |
 |-------|------|
 | Full JS guide | [docs/javascript.md](../docs/javascript.md) |
+| Getting started | [docs/getting-started.md](../docs/getting-started.md) |
+| Landing / tutorial | [docs/landing.md](../docs/landing.md) |
 | QR & URL delivery | [docs/delivering-tokens.md](../docs/delivering-tokens.md) |
 | Key rotation | [docs/key-rotation.md](../docs/key-rotation.md) |
 | Security | [SECURITY.md](../SECURITY.md) |
