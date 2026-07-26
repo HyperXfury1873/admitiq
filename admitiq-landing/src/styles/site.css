@@ -757,6 +757,98 @@ code,
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
+.aq-ttl {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.aq-ttl-label-row {
+  display: grid;
+  gap: 8px;
+}
+
+.aq-ttl-field {
+  margin: 0;
+}
+
+.aq-ttl-summary {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.aq-ttl-summary strong {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.aq-ttl-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.aq-ttl-chip {
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 550;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.aq-ttl-chip:hover {
+  border-color: var(--accent);
+}
+
+.aq-ttl-chip.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.aq-ttl-hint {
+  margin-top: 0;
+}
+
+.aq-issue-meta {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.aq-secret-row {
+  display: grid;
+  gap: 6px;
+}
+
+.aq-secret-row .aq-mono-inline {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  word-break: break-all;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(18, 21, 26, 0.04);
+}
+
+.aq-stale-hint {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(180, 120, 20, 0.1);
+  color: #8a5a00;
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
 .aq-demo-buttons {
   display: flex;
   flex-wrap: wrap;

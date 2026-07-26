@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import QRCode from "qrcode";
 import { demoIssue, demoVerify } from "../lib/demoCrypto.js";
 import { TokenInspector } from "../components/TokenInspector.jsx";
+import { TtlControls, formatTtl } from "../components/TtlControls.jsx";
 import { TUTORIAL_CASES } from "../data/content.js";
 
 async function makeQrDataUrl(text) {
@@ -100,6 +101,8 @@ function InteractiveTutorial() {
   const [secret] = useState("demo-secret-" + Math.random().toString(36).slice(2, 8));
   const [caseId, setCaseId] = useState(null);
   const [fields, setFields] = useState({});
+  const [ttlSeconds, setTtlSeconds] = useState(3600);
+  const [baseUrl, setBaseUrl] = useState("");
   const [token, setToken] = useState(null);
   const [url, setUrl] = useState(null);
   const [qrToken, setQrToken] = useState(null);
@@ -108,9 +111,16 @@ function InteractiveTutorial() {
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState(null);
   const [scanCount, setScanCount] = useState(0);
+  const [stale, setStale] = useState(false);
   const usedJtis = useRef(new Set());
 
   const selected = TUTORIAL_CASES.find((c) => c.id === caseId) || null;
+  const ttlNum = Number(ttlSeconds);
+  const ttlOk = Number.isFinite(ttlNum) && ttlNum >= 1;
+
+  function markStaleIfIssued() {
+    if (token) setStale(true);
+  }
 
   function selectCase(c) {
     const next = {};
@@ -119,6 +129,8 @@ function InteractiveTutorial() {
     });
     setCaseId(c.id);
     setFields(next);
+    setTtlSeconds(c.ttlSeconds);
+    setBaseUrl(c.baseUrl);
     setToken(null);
     setUrl(null);
     setQrToken(null);
@@ -126,6 +138,7 @@ function InteractiveTutorial() {
     setDeliverTab(c.preferUrl ? "url" : "token");
     setStatus(null);
     setScanCount(0);
+    setStale(false);
     usedJtis.current = new Set();
   }
 
@@ -137,17 +150,34 @@ function InteractiveTutorial() {
     setQrUrl(null);
     setStatus(null);
     setScanCount(0);
+    setStale(false);
     usedJtis.current = new Set();
   }
 
   async function handleIssue() {
     if (!selected) return;
+    if (!ttlOk) {
+      setStatus({
+        ok: false,
+        title: "TTL required",
+        detail: "Set how many seconds this pass should stay valid (at least 1).",
+      });
+      return;
+    }
+    if (!baseUrl.trim()) {
+      setStatus({
+        ok: false,
+        title: "Check-in URL required",
+        detail: "Enter a base URL for the signed link (e.g. https://events.example/checkin).",
+      });
+      return;
+    }
     setBusy(true);
     setStatus(null);
     try {
       const payload = { ...fields };
-      const { token: t } = await demoIssue(payload, selected.ttlSeconds, secret);
-      const link = `${selected.baseUrl}?token=${encodeURIComponent(t)}`;
+      const { token: t } = await demoIssue(payload, ttlNum, secret);
+      const link = `${baseUrl.trim()}?token=${encodeURIComponent(t)}`;
       const [qTok, qLink] = await Promise.all([makeQrDataUrl(t), makeQrDataUrl(link)]);
       usedJtis.current = new Set();
       setToken(t);
@@ -155,11 +185,12 @@ function InteractiveTutorial() {
       setQrToken(qTok);
       setQrUrl(qLink);
       setScanCount(0);
+      setStale(false);
       setDeliverTab(selected.preferUrl ? "url" : "qr-token");
       setStatus({
         ok: true,
         title: "Issued",
-        detail: `${selected.roleIssue}: sealed payload with ${selected.ttlLabel} expiry. Same as issue() + issueUrl() / issueQR() in the library.`,
+        detail: `${selected.roleIssue}: sealed for ${formatTtl(ttlNum)}. Same as issue() + issueUrl() / issueQR() in the library.`,
       });
     } catch (err) {
       setStatus({ ok: false, title: "Issue failed", detail: err.message || String(err) });
@@ -214,10 +245,11 @@ function InteractiveTutorial() {
     setQrToken(null);
     setQrUrl(null);
     setScanCount(0);
+    setStale(false);
     setStatus({
       ok: true,
       title: "Cleared",
-      detail: "Used-list reset. Edit fields and issue again.",
+      detail: "Used-list reset. Edit fields, TTL, or URL and issue again.",
     });
   }
 
@@ -237,7 +269,7 @@ function InteractiveTutorial() {
               <h2 className="aq-h2">Pick a use case</h2>
               <p className="aq-p aq-p-tight">
                 Same crypto as the library: issue → deliver (token / URL / QR) → verify.
-                Choose what you want to build, then try it with a real UI.
+                Each scenario starts with a sensible TTL — you can change it before issuing.
               </p>
             </div>
             <div className="aq-case-list">
@@ -256,7 +288,9 @@ function InteractiveTutorial() {
                   <span className="aq-case-strip-num">{String(i + 1).padStart(2, "0")}</span>
                   <span className="aq-case-strip-content">
                     <strong>{c.title}</strong>
-                    <span>{c.blurb}</span>
+                    <span>
+                      {c.blurb} · suggested TTL {c.ttlLabel}
+                    </span>
                   </span>
                   <span className="aq-case-strip-arrow">→</span>
                 </motion.button>
@@ -287,35 +321,83 @@ function InteractiveTutorial() {
                 <strong className="aq-ink">{selected.roleIssue}</strong>
                 {" → deliver → "}
                 <strong className="aq-ink">{selected.roleScan}</strong>
-                {" · TTL "}{selected.ttlLabel}
+                {" · TTL "}
+                {ttlOk ? formatTtl(ttlNum) : "set below"}
+                {selected.ttlLabel ? ` (suggested: ${selected.ttlLabel})` : ""}
               </p>
             </div>
 
             <div className="aq-workshop-grid">
               <div className="aq-panel aq-ticket-panel">
-                <div className="aq-panel-title">1 · Your data (goes into issue)</div>
+                <div className="aq-panel-title">1 · Issue settings</div>
                 <div className="aq-field-grid">
                   {selected.fields.map((f) => (
                     <label key={f.key} className="aq-field">
                       <span>{f.label}</span>
                       <input
                         value={fields[f.key] || ""}
-                        onChange={(e) => setFields((prev) => ({ ...prev, [f.key]: e.target.value }))}
+                        onChange={(e) => {
+                          setFields((prev) => ({ ...prev, [f.key]: e.target.value }));
+                          markStaleIfIssued();
+                        }}
                       />
                     </label>
                   ))}
+                  <label className="aq-field">
+                    <span>Check-in base URL</span>
+                    <input
+                      value={baseUrl}
+                      onChange={(e) => {
+                        setBaseUrl(e.target.value);
+                        markStaleIfIssued();
+                      }}
+                      placeholder="https://example.com/checkin"
+                      spellCheck={false}
+                    />
+                  </label>
                 </div>
+
+                <div className="aq-issue-meta">
+                  <TtlControls
+                    id={`ttl-${selected.id}`}
+                    value={ttlSeconds}
+                    onChange={(v) => {
+                      setTtlSeconds(v);
+                      markStaleIfIssued();
+                    }}
+                    hint={`Suggested for this scenario: ${selected.ttlLabel}. This is the same ttl_seconds / ttlSeconds you pass to issue().`}
+                  />
+
+                  <div className="aq-secret-row">
+                    <span className="aq-field">
+                      <span>Demo secret (browser only)</span>
+                    </span>
+                    <div className="aq-mono-inline">{secret}</div>
+                    <CopyButton text={secret} />
+                    <p className="aq-demo-note" style={{ marginTop: 0 }}>
+                      Random for this session. Not sent to LogicLitz. In production keep secrets in env vars.
+                    </p>
+                  </div>
+                </div>
+
+                {stale && token ? (
+                  <p className="aq-stale-hint" role="status">
+                    Settings changed since the last issue. Click <strong>Issue pass</strong> again to mint a
+                    matching token.
+                  </p>
+                ) : null}
+
                 <div className="aq-demo-buttons">
                   <motion.button
                     type="button"
                     className="aq-btn aq-btn-primary"
-                    disabled={busy}
+                    disabled={busy || !ttlOk}
                     onClick={handleIssue}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     transition={springHover}
                   >
-                    {busy ? "Issuing…" : "Issue pass"}
+                    {busy ? "Issuing…" : stale && token ? "Re-issue pass" : "Issue pass"}
                   </motion.button>
                   <motion.button
                     type="button"
@@ -329,7 +411,7 @@ function InteractiveTutorial() {
                   </motion.button>
                 </div>
                 <p className="aq-demo-note">
-                  Calls the same HMAC format as <code>issue(payload, ttl, secret)</code>. Secret stays in this browser demo only.
+                  Calls <code>issue(payload, ttlSeconds, secret)</code> with the TTL you set above.
                 </p>
               </div>
 
@@ -344,7 +426,7 @@ function InteractiveTutorial() {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                     >
-                      Issue a pass to generate a token, check-in link, and QR images.
+                      Set your fields and TTL, then issue a pass to generate a token, check-in link, and QR images.
                     </motion.p>
                   ) : (
                     <motion.div
@@ -385,7 +467,8 @@ function InteractiveTutorial() {
                             transition={{ duration: 0.25 }}
                           >
                             <p className="aq-deliver-hint">
-                              Same idea as jwt.io — color-coded <code>header.payload.signature</code>, decoded locally.
+                              Same idea as jwt.io — color-coded <code>header.payload.signature</code>. Check payload{" "}
+                              <code>exp</code> for your TTL.
                             </p>
                             <TokenInspector token={token} />
                             <CopyButton text={token} />
@@ -400,7 +483,9 @@ function InteractiveTutorial() {
                             exit={{ opacity: 0, x: -10 }}
                             transition={{ duration: 0.25 }}
                           >
-                            <p className="aq-deliver-hint">Same as <code>issueUrl(baseUrl, …)</code> / <code>issue_url</code>.</p>
+                            <p className="aq-deliver-hint">
+                              Same as <code>issueUrl(baseUrl, …)</code> / <code>issue_url</code>.
+                            </p>
                             <div className="aq-mono-box">{url}</div>
                             <CopyButton text={url} />
                           </motion.div>
@@ -414,9 +499,13 @@ function InteractiveTutorial() {
                             exit={{ opacity: 0, x: -10 }}
                             transition={{ duration: 0.25 }}
                           >
-                            <p className="aq-deliver-hint">Same as <code>issueQR()</code> / <code>issue_qr()</code> — encodes the token.</p>
+                            <p className="aq-deliver-hint">
+                              Same as <code>issueQR()</code> / <code>issue_qr()</code> — encodes the token.
+                            </p>
                             {qrToken && <img src={qrToken} alt="QR code of token" width={220} height={220} />}
-                            <a className="aq-btn" href={qrToken} download={`${selected.id}-token.png`}>Download PNG</a>
+                            <a className="aq-btn" href={qrToken} download={`${selected.id}-token.png`}>
+                              Download PNG
+                            </a>
                           </motion.div>
                         )}
                         {deliverTab === "qr-url" && (
@@ -428,9 +517,13 @@ function InteractiveTutorial() {
                             exit={{ opacity: 0, x: -10 }}
                             transition={{ duration: 0.25 }}
                           >
-                            <p className="aq-deliver-hint">Same as <code>issueUrlQR()</code> / <code>issue_url_qr()</code> — scan opens the link.</p>
+                            <p className="aq-deliver-hint">
+                              Same as <code>issueUrlQR()</code> / <code>issue_url_qr()</code> — scan opens the link.
+                            </p>
                             {qrUrl && <img src={qrUrl} alt="QR code of URL" width={220} height={220} />}
-                            <a className="aq-btn" href={qrUrl} download={`${selected.id}-url.png`}>Download PNG</a>
+                            <a className="aq-btn" href={qrUrl} download={`${selected.id}-url.png`}>
+                              Download PNG
+                            </a>
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -442,7 +535,8 @@ function InteractiveTutorial() {
               <div className="aq-panel aq-ticket-panel">
                 <div className="aq-panel-title">3 · Verify (scan)</div>
                 <p className="aq-deliver-hint">
-                  {selected.roleScan}. First success marks <code>jti</code> used. Second scan should fail. Tamper should fail.
+                  {selected.roleScan}. First success marks <code>jti</code> used. Second scan should fail. Tamper
+                  should fail. Try a short TTL (e.g. 1 min), wait, then scan to see expiry.
                 </p>
                 <div className="aq-demo-buttons">
                   <motion.button
@@ -499,15 +593,15 @@ function InteractiveTutorial() {
                   <pre className="aq-mini-code">{`# Python
 from admitiq import issue, issue_url, issue_qr, issue_url_qr, verify
 payload = ${JSON.stringify(fields, null, 0)}
-token = issue(payload, ttl_seconds=${selected.ttlSeconds}, secret="…")
-url = issue_url("${selected.baseUrl}", payload, ${selected.ttlSeconds}, "…")
-issue_qr(payload, ${selected.ttlSeconds}, "…", output_path="pass.png")
+token = issue(payload, ttl_seconds=${ttlOk ? ttlNum : selected.ttlSeconds}, secret="…")
+url = issue_url("${baseUrl.trim() || selected.baseUrl}", payload, ${ttlOk ? ttlNum : selected.ttlSeconds}, "…")
+issue_qr(payload, ${ttlOk ? ttlNum : selected.ttlSeconds}, "…", output_path="pass.png")
 
 # JavaScript
 const { issue, issueUrl, issueQR, issueUrlQR, verify } = require("admitiq");
-const token = issue(${JSON.stringify(fields)}, ${selected.ttlSeconds}, "…");
-const url = issueUrl("${selected.baseUrl}", ${JSON.stringify(fields)}, ${selected.ttlSeconds}, "…");
-await issueQR(${JSON.stringify(fields)}, ${selected.ttlSeconds}, "…", "pass.png");`}</pre>
+const token = issue(${JSON.stringify(fields)}, ${ttlOk ? ttlNum : selected.ttlSeconds}, "…");
+const url = issueUrl("${baseUrl.trim() || selected.baseUrl}", ${JSON.stringify(fields)}, ${ttlOk ? ttlNum : selected.ttlSeconds}, "…");
+await issueQR(${JSON.stringify(fields)}, ${ttlOk ? ttlNum : selected.ttlSeconds}, "…", "pass.png");`}</pre>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -517,6 +611,5 @@ await issueQR(${JSON.stringify(fields)}, ${selected.ttlSeconds}, "…", "pass.pn
     </div>
   );
 }
-
 
 export { InteractiveTutorial, CopyButton, springHover, sectionReveal, HeroTicket };
