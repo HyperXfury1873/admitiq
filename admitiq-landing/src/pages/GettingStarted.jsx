@@ -46,7 +46,7 @@ npm install admitiq
             <Link to="/tutorial">Interactive tutorial</Link> — see QR, URL, tamper, reuse
           </li>
           <li>
-            <Link to="/debugger">Token debugger</Link> — decode header · payload · signature like jwt.io
+            <Link to="/debugger">Token playground</Link> — issue &amp; verify with a secret (like jwt.io)
           </li>
           <li>
             <Link to="/python">Python guide</Link> · <Link to="/javascript">JavaScript guide</Link>

@@ -972,8 +972,82 @@ code,
   max-width: 960px;
 }
 
+.aq-playground {
+  display: grid;
+  gap: 14px;
+  max-width: 1100px;
+}
+
+.aq-playground-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.aq-playground-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.aq-playground-controls,
+.aq-playground-decode {
+  min-width: 0;
+}
+
+.aq-playground-textarea {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  padding: 10px 12px;
+  outline: none;
+  resize: vertical;
+  width: 100%;
+  box-sizing: border-box;
+  word-break: break-all;
+}
+
+.aq-playground-textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.aq-playground-row {
+  grid-template-columns: 1fr 1.4fr;
+  margin-top: 10px;
+}
+
+.aq-verify-meta {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.aq-verify-data {
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.aq-status .aq-token-json {
+  max-height: 160px;
+}
+
 @media (max-width: 880px) {
   .aq-token-panels {
+    grid-template-columns: 1fr;
+  }
+
+  .aq-playground-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .aq-playground-row {
     grid-template-columns: 1fr;
   }
 }

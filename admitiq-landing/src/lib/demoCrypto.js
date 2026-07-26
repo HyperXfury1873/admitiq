@@ -82,12 +82,45 @@ export async function demoVerify(token, secret, usedJtis) {
   );
 
   const valid = await crypto.subtle.verify("HMAC", key, sigBytes, utf8Bytes(signingInput));
-  if (!valid) return { ok: false, reason: "Signature mismatch — token was tampered with or forged" };
+  if (!valid) {
+    return {
+      ok: false,
+      signatureValid: false,
+      reason: "Signature mismatch — wrong secret or token was tampered with",
+    };
+  }
 
-  const body = JSON.parse(atob(bodyB64.replace(/-/g, "+").replace(/_/g, "/")));
+  const body = JSON.parse(b64urlDecodeToString(bodyB64));
   const now = Math.floor(Date.now() / 1000);
-  if (now > body.exp) return { ok: false, reason: `Expired at ${body.exp}` };
-  if (usedJtis.has(body.jti)) return { ok: false, reason: "Already used (revoked)" };
+  if (now > body.exp) {
+    return {
+      ok: false,
+      signatureValid: true,
+      expired: true,
+      exp: body.exp,
+      reason: `Expired at ${new Date(body.exp * 1000).toISOString()}`,
+      data: body.data,
+      jti: body.jti,
+    };
+  }
+  if (usedJtis && usedJtis.has(body.jti)) {
+    return {
+      ok: false,
+      signatureValid: true,
+      expired: false,
+      reason: "Already used (revoked)",
+      data: body.data,
+      jti: body.jti,
+    };
+  }
 
-  return { ok: true, data: body.data, jti: body.jti };
+  return {
+    ok: true,
+    signatureValid: true,
+    expired: false,
+    data: body.data,
+    jti: body.jti,
+    exp: body.exp,
+    iat: body.iat,
+  };
 }

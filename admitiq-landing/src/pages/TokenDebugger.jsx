@@ -1,23 +1,269 @@
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import Seo from "../components/Seo.jsx";
 import PageHero from "../components/PageHero.jsx";
 import { TokenInspector } from "../components/TokenInspector.jsx";
+import { demoIssue, demoVerify } from "../lib/demoCrypto.js";
+
+const DEFAULT_PAYLOAD = `{
+  "ticketId": "T-1001",
+  "seat": "A12"
+}`;
 
 export default function TokenDebugger() {
+  const [mode, setMode] = useState("verify"); // issue | verify
+  const [token, setToken] = useState("");
+  const [secret, setSecret] = useState("demo-secret-change-me");
+  const [payloadText, setPayloadText] = useState(DEFAULT_PAYLOAD);
+  const [ttlSeconds, setTtlSeconds] = useState(3600);
+  const [verifyResult, setVerifyResult] = useState(null);
+  const [issueError, setIssueError] = useState(null);
+  const [busy, setBusy] = useState(false);
+
+  const decodedOk = useMemo(() => {
+    if (!token.trim()) return false;
+    try {
+      return token.trim().split(".").length === 3;
+    } catch {
+      return false;
+    }
+  }, [token]);
+
+  useEffect(() => {
+    setVerifyResult(null);
+  }, [token, secret]);
+
+  async function handleIssue() {
+    setIssueError(null);
+    setVerifyResult(null);
+    let payload;
+    try {
+      payload = JSON.parse(payloadText);
+    } catch {
+      setIssueError("Payload must be valid JSON.");
+      return;
+    }
+    if (!secret.trim()) {
+      setIssueError("Enter a signing secret.");
+      return;
+    }
+    const ttl = Number(ttlSeconds);
+    if (!Number.isFinite(ttl) || ttl < 1) {
+      setIssueError("TTL must be a positive number of seconds.");
+      return;
+    }
+    setBusy(true);
+    try {
+      const { token: t } = await demoIssue(payload, ttl, secret.trim());
+      setToken(t);
+      setMode("verify");
+    } catch (e) {
+      setIssueError(e?.message || "Could not issue token.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleVerify() {
+    setIssueError(null);
+    if (!token.trim()) {
+      setVerifyResult({ ok: false, reason: "Paste or issue a token first." });
+      return;
+    }
+    if (!secret.trim()) {
+      setVerifyResult({ ok: false, reason: "Enter the HMAC secret used to sign this token." });
+      return;
+    }
+    setBusy(true);
+    try {
+      const result = await demoVerify(token.trim(), secret.trim(), null);
+      setVerifyResult(result);
+    } catch (e) {
+      setVerifyResult({ ok: false, reason: e?.message || "Verify failed." });
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <>
       <Seo
-        title="Token debugger — decode AdmitiQ tokens like jwt.io"
-        description="Paste an AdmitiQ token and inspect header, payload, and signature locally. Same three-part shape as JWT; decode never leaves your browser."
+        title="Token playground — issue & verify AdmitiQ tokens"
+        description="Issue and verify AdmitiQ tokens in your browser. Paste a token and secret to check the HMAC signature and expiry — like jwt.io, for AdmitiQ."
         path="/debugger"
-        keywords="AdmitiQ token debugger, decode AdmitiQ token, jwt.io alternative QR token, header payload signature"
+        keywords="AdmitiQ token verify, AdmitiQ playground, decode verify HMAC token, jwt.io AdmitiQ"
       />
       <PageHero
-        kicker="Debugger"
-        title="Inspect an AdmitiQ token"
-        subtitle="Same idea as jwt.io: color-coded header · payload · signature. Decoding runs entirely in your browser — nothing is sent to LogicLitz."
+        kicker="Playground"
+        title="Issue & verify tokens"
+        subtitle="A jwt.io-style frontend for AdmitiQ. Create a token, or paste one with its secret — signature and expiry are checked locally. Nothing is sent to LogicLitz."
       />
+
       <section className="aq-section aq-debugger-section">
-        <TokenInspector showPaste className="aq-debugger-inspector" />
+        <div className="aq-playground">
+          <div className="aq-playground-modes" role="tablist" aria-label="Playground mode">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === "issue"}
+              className={`aq-deliver-tab${mode === "issue" ? " active" : ""}`}
+              onClick={() => setMode("issue")}
+            >
+              Issue
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === "verify"}
+              className={`aq-deliver-tab${mode === "verify" ? " active" : ""}`}
+              onClick={() => setMode("verify")}
+            >
+              Verify
+            </button>
+          </div>
+
+          <div className="aq-playground-grid">
+            <div className="aq-panel aq-playground-controls">
+              {mode === "issue" ? (
+                <>
+                  <div className="aq-panel-title">1 · Issue</div>
+                  <label className="aq-field">
+                    Payload (JSON)
+                    <textarea
+                      className="aq-playground-textarea"
+                      value={payloadText}
+                      onChange={(e) => setPayloadText(e.target.value)}
+                      rows={8}
+                      spellCheck={false}
+                    />
+                  </label>
+                  <div className="aq-field-grid aq-playground-row">
+                    <label className="aq-field">
+                      TTL (seconds)
+                      <input
+                        type="number"
+                        min={1}
+                        value={ttlSeconds}
+                        onChange={(e) => setTtlSeconds(e.target.value)}
+                      />
+                    </label>
+                    <label className="aq-field">
+                      Secret
+                      <input
+                        type="text"
+                        value={secret}
+                        onChange={(e) => setSecret(e.target.value)}
+                        autoComplete="off"
+                        spellCheck={false}
+                      />
+                    </label>
+                  </div>
+                  <div className="aq-demo-buttons">
+                    <button
+                      type="button"
+                      className="aq-btn aq-btn-primary"
+                      onClick={handleIssue}
+                      disabled={busy}
+                    >
+                      {busy ? "Issuing…" : "Issue token"}
+                    </button>
+                  </div>
+                  {issueError && <p className="aq-token-err">{issueError}</p>}
+                  <p className="aq-deliver-hint">
+                    Same crypto as <code>issue()</code> in the library. For QR/URL flows, use the{" "}
+                    <Link to="/tutorial">interactive tutorial</Link>.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <div className="aq-panel-title">1 · Verify</div>
+                  <label className="aq-field">
+                    Encoded token
+                    <textarea
+                      className="aq-playground-textarea"
+                      value={token}
+                      onChange={(e) => setToken(e.target.value)}
+                      placeholder="Paste an AdmitiQ token (header.payload.signature)"
+                      rows={6}
+                      spellCheck={false}
+                    />
+                  </label>
+                  <label className="aq-field">
+                    Secret (HMAC)
+                    <input
+                      type="text"
+                      value={secret}
+                      onChange={(e) => setSecret(e.target.value)}
+                      placeholder="Same secret used at issue time"
+                      autoComplete="off"
+                      spellCheck={false}
+                    />
+                  </label>
+                  <div className="aq-demo-buttons">
+                    <button
+                      type="button"
+                      className="aq-btn aq-btn-primary"
+                      onClick={handleVerify}
+                      disabled={busy || !token.trim()}
+                    >
+                      {busy ? "Verifying…" : "Verify signature"}
+                    </button>
+                    <button
+                      type="button"
+                      className="aq-btn"
+                      onClick={() => {
+                        setToken("");
+                        setVerifyResult(null);
+                      }}
+                      disabled={!token}
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  {verifyResult && (
+                    <div className={`aq-status ${verifyResult.ok ? "ok" : "bad"}`} role="status">
+                      <strong>{verifyResult.ok ? "Valid token" : "Invalid token"}</strong>
+                      <span>{verifyResult.reason || (verifyResult.ok ? "Signature matches and token is not expired." : "")}</span>
+                      {verifyResult.ok && verifyResult.jti && (
+                        <span className="aq-verify-meta">
+                          jti: {verifyResult.jti}
+                          {verifyResult.exp
+                            ? ` · exp: ${new Date(verifyResult.exp * 1000).toLocaleString()}`
+                            : ""}
+                        </span>
+                      )}
+                      {verifyResult.ok && verifyResult.data != null && (
+                        <pre className="aq-token-json aq-verify-data">
+                          {JSON.stringify(verifyResult.data, null, 2)}
+                        </pre>
+                      )}
+                      {verifyResult.signatureValid === false && (
+                        <span className="aq-verify-meta">Tip: wrong secret is the most common cause.</span>
+                      )}
+                      {verifyResult.expired && (
+                        <span className="aq-verify-meta">Signature was OK — only expiry failed.</span>
+                      )}
+                    </div>
+                  )}
+                  <p className="aq-deliver-hint">
+                    Checks HMAC-SHA256 and <code>exp</code> only. Single-use / revoke needs your store (see tutorial).
+                  </p>
+                </>
+              )}
+            </div>
+
+            <div className="aq-panel aq-playground-decode">
+              <div className="aq-panel-title">2 · Decoded (read-only)</div>
+              {decodedOk ? (
+                <TokenInspector token={token.trim()} />
+              ) : (
+                <p className="aq-panel-empty">
+                  Issue a token or paste one to see color-coded header · payload · signature — same idea as jwt.io.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
       </section>
     </>
   );
