@@ -4,8 +4,41 @@ function b64urlEncode(bytes) {
   return btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
+function b64urlDecodeToString(b64) {
+  const padded = b64.replace(/-/g, "+").replace(/_/g, "/") + "==".slice(0, (4 - (b64.length % 4)) % 4);
+  return atob(padded);
+}
+
 function utf8Bytes(str) {
   return new TextEncoder().encode(str);
+}
+
+/** Split an AdmitiQ token like jwt.io — header · payload · signature (no crypto). */
+export function decodeTokenParts(token) {
+  if (!token || typeof token !== "string") {
+    return { ok: false, error: "Paste an AdmitiQ token (header.payload.signature)." };
+  }
+  const trimmed = token.trim();
+  const parts = trimmed.split(".");
+  if (parts.length !== 3) {
+    return { ok: false, error: "Expected three base64url segments separated by dots." };
+  }
+  const [headerB64, payloadB64, signatureB64] = parts;
+  try {
+    const header = JSON.parse(b64urlDecodeToString(headerB64));
+    const payload = JSON.parse(b64urlDecodeToString(payloadB64));
+    return {
+      ok: true,
+      raw: trimmed,
+      headerB64,
+      payloadB64,
+      signatureB64,
+      header,
+      payload,
+    };
+  } catch {
+    return { ok: false, error: "Could not decode base64url JSON (not a valid AdmitiQ/JWT-shaped token)." };
+  }
 }
 
 async function hmacKey(secret) {

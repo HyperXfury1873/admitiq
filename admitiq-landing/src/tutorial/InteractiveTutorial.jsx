@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import QRCode from "qrcode";
 import { demoIssue, demoVerify } from "../lib/demoCrypto.js";
+import { TokenInspector } from "../components/TokenInspector.jsx";
 import { TUTORIAL_CASES } from "../data/content.js";
 
 async function makeQrDataUrl(text) {
@@ -383,8 +384,10 @@ function InteractiveTutorial() {
                             exit={{ opacity: 0, x: -10 }}
                             transition={{ duration: 0.25 }}
                           >
-                            <p className="aq-deliver-hint">Raw string from <code>issue()</code> — put anywhere.</p>
-                            <div className="aq-mono-box">{token}</div>
+                            <p className="aq-deliver-hint">
+                              Same idea as jwt.io — color-coded <code>header.payload.signature</code>, decoded locally.
+                            </p>
+                            <TokenInspector token={token} />
                             <CopyButton text={token} />
                           </motion.div>
                         )}

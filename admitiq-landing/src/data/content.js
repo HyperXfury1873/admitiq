@@ -42,6 +42,7 @@ export const DEFAULT_KEYWORDS = [
 export const NAV = [
   { to: "/why", label: "Why" },
   { to: "/tutorial", label: "Tutorial" },
+  { to: "/debugger", label: "Debugger" },
   { to: "/use-cases", label: "Use cases" },
   { to: "/getting-started", label: "Start" },
   { to: "/python", label: "Python" },
@@ -56,6 +57,7 @@ export const FOOTER_COLUMNS = [
       { to: "/why", label: "Why AdmitiQ" },
       { to: "/use-cases", label: "Use cases" },
       { to: "/tutorial", label: "Tutorial" },
+      { to: "/debugger", label: "Token debugger" },
       { to: "/getting-started", label: "Getting started" },
       { to: "/faq", label: "FAQ" },
     ],

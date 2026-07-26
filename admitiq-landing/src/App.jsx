@@ -17,6 +17,7 @@ import WhyAdmitiq from "./pages/WhyAdmitiq.jsx";
 import SecureQrGuide from "./pages/guides/SecureQrGuide.jsx";
 import SingleUseQrGuide from "./pages/guides/SingleUseQrGuide.jsx";
 import ExpiringTicketsGuide from "./pages/guides/ExpiringTicketsGuide.jsx";
+import TokenDebugger from "./pages/TokenDebugger.jsx";
 import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="about" element={<About />} />
             <Route path="privacy" element={<Privacy />} />
             <Route path="tutorial" element={<Tutorial />} />
+            <Route path="debugger" element={<TokenDebugger />} />
             <Route path="use-cases" element={<UseCases />} />
             <Route path="getting-started" element={<GettingStarted />} />
             <Route path="python" element={<PythonPage />} />
