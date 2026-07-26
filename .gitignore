@@ -21,6 +21,7 @@ Thumbs.db
 examples/cross-language/token_from_*.txt
 *.tgz
 admitiq-landing/dist/
+admitiq-landing/admitiq-hostinger-dist.zip
 
 # Secrets (never commit)
 *Recovery-Codes*

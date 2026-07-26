@@ -1,7 +1,7 @@
 {
   "name": "admitiq",
-  "version": "0.3.4",
-  "description": "AdmitiQ: signed, expiring, revocable tokens for QR codes and ticket links. https://admitiq.logiclitz.org",
+  "version": "0.3.5",
+  "description": "AdmitiQ: signed, expiring, revocable tokens for QR codes and ticket links. By LogicLitz — https://admitiq.logiclitz.org",
   "main": "src/index.js",
   "files": [
     "src",
@@ -30,11 +30,13 @@
     "signed-url",
     "single-use",
     "admitiq",
+    "logiclitz",
     "expiring-token"
   ],
   "license": "MIT",
   "author": {
     "name": "LogicLitz",
+    "email": "logiclitz@gmail.com",
     "url": "https://logiclitz.org"
   },
   "homepage": "https://admitiq.logiclitz.org",
@@ -55,5 +57,9 @@
   },
   "bugs": {
     "url": "https://github.com/HyperXfury1873/admitiq/issues"
+  },
+  "funding": {
+    "type": "organization",
+    "url": "https://logiclitz.org"
   }
 }

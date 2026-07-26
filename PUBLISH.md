@@ -6,8 +6,8 @@ This guide is for **maintainers** who want `pip install admitiq` and `npm instal
 
 | Registry | Package | Status |
 |----------|---------|--------|
-| PyPI | [`admitiq`](https://pypi.org/project/admitiq/) | Published (`0.3.2`) |
-| npm | `admitiq` | Not published yet (see § npm troubleshooting) |
+| PyPI | [`admitiq`](https://pypi.org/project/admitiq/) | Published (`0.3.5`) |
+| npm | [`admitiq`](https://www.npmjs.com/package/admitiq) | Published (`0.3.5`) |
 | TestPyPI | practice only | Optional |
 
 ---
@@ -16,7 +16,7 @@ This guide is for **maintainers** who want `pip install admitiq` and `npm instal
 
 1. Repo is public: https://github.com/HyperXfury1873/admitiq  
 2. CI is green on `main`  
-3. Version matches everywhere (currently **0.3.2**):
+3. Version matches everywhere (currently **0.3.5**):
    - `python/pyproject.toml` → `version`
    - `python/admitiq/__init__.py` → `__version__`
    - `js/package.json` → `version`

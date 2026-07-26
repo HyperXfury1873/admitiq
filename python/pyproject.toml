@@ -4,12 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "admitiq"
-version = "0.3.4"
-description = "AdmitiQ: signed, expiring, revocable tokens for QR codes and ticket links. https://admitiq.logiclitz.org"
+version = "0.3.5"
+description = "AdmitiQ: signed, expiring, revocable tokens for QR codes and ticket links. By LogicLitz — https://admitiq.logiclitz.org"
 readme = "README.md"
 requires-python = ">=3.8"
 license = { text = "MIT" }
-authors = [{ name = "LogicLitz" }]
+authors = [{ name = "LogicLitz", email = "logiclitz@gmail.com" }]
+maintainers = [{ name = "LogicLitz", email = "logiclitz@gmail.com" }]
 keywords = [
   "qr",
   "qrcode",
@@ -22,10 +23,16 @@ keywords = [
   "signed-url",
   "single-use",
   "admitiq",
+  "logiclitz",
 ]
 dependencies = []
 classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Security :: Cryptography",
+    "Topic :: Software Development :: Libraries :: Python Modules",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
@@ -38,6 +45,11 @@ dev = ["pytest>=7.0", "fastapi>=0.100", "flask>=2.3", "httpx>=0.24"]
 
 [project.urls]
 Homepage = "https://admitiq.logiclitz.org"
-Documentation = "https://github.com/HyperXfury1873/admitiq/tree/main/docs"
+Documentation = "https://admitiq.logiclitz.org/getting-started"
+Tutorial = "https://admitiq.logiclitz.org/tutorial"
+Playground = "https://admitiq.logiclitz.org/debugger"
+"LogicLitz" = "https://logiclitz.org"
 Repository = "https://github.com/HyperXfury1873/admitiq"
 Issues = "https://github.com/HyperXfury1873/admitiq/issues"
+Changelog = "https://github.com/HyperXfury1873/admitiq/releases"
+"Source docs" = "https://github.com/HyperXfury1873/admitiq/tree/main/docs"

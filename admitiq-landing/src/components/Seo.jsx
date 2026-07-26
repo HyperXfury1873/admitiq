@@ -30,7 +30,7 @@ export default function Seo({
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
         url: SITE_URL,
         downloadUrl: GITHUB,
-        softwareVersion: "0.3.4",
+        softwareVersion: "0.3.5",
         description:
           "HMAC-signed, expiring, optionally single-use tokens for QR codes, deep links, event tickets, attendance, and coupons.",
       },
