@@ -8,13 +8,10 @@
  * Requires the 'redis' package (node-redis v4+):
  *   npm install redis
  *
- * Usage:
- *   const client = redis.createClient({ url: 'redis://localhost:6379' });
- *   await client.connect();
- *   const store = new RedisRevocationStore({ client });
+ * Usage (atomic consume — admit only if markUsed returns true):
  *   const payload = await verify(token, SECRET, store.isRevoked.bind(store));
- *   // only after you've decided to actually honor this scan:
- *   await store.markUsed(payload.jti);
+ *   const first = await store.markUsed(payload.jti);
+ *   if (!first) throw new TokenRevokedError("already used");
  */
 class RedisRevocationStore {
   /**

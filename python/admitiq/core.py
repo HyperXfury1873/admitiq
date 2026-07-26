@@ -8,6 +8,7 @@ import base64
 import hashlib
 import hmac
 import json
+import math
 import time
 import uuid
 from typing import Any, Callable, Dict, Optional, Sequence
@@ -45,6 +46,29 @@ def _b64url_decode(data: str) -> bytes:
     return base64.urlsafe_b64decode(data + padding)
 
 
+def _assert_secret(secret: str) -> None:
+    if not isinstance(secret, str) or len(secret) == 0:
+        raise InvalidSignatureError("HMAC secret must be a non-empty string")
+
+
+def _assert_ttl_seconds(ttl_seconds: Any) -> None:
+    if isinstance(ttl_seconds, bool) or not isinstance(ttl_seconds, (int, float)):
+        raise InvalidSignatureError("ttl_seconds must be a finite number")
+    if not math.isfinite(ttl_seconds):
+        raise InvalidSignatureError("ttl_seconds must be a finite number")
+
+
+def _assert_token_body(body: Any) -> None:
+    if not isinstance(body, dict):
+        raise InvalidSignatureError("Malformed token body")
+    exp = body.get("exp")
+    if isinstance(exp, bool) or not isinstance(exp, (int, float)) or not math.isfinite(exp):
+        raise InvalidSignatureError("Token missing valid exp claim")
+    jti = body.get("jti")
+    if not isinstance(jti, str) or len(jti) == 0:
+        raise InvalidSignatureError("Token missing valid jti claim")
+
+
 def _sign(message: bytes, secret: str) -> str:
     digest = hmac.new(secret.encode("utf-8"), message, hashlib.sha256).digest()
     return _b64url_encode(digest)
@@ -76,11 +100,13 @@ def issue(payload: Dict[str, Any], ttl_seconds: int, secret: str) -> str:
     Returns:
         A compact token string, safe to encode directly into a QR code.
     """
+    _assert_secret(secret)
+    _assert_ttl_seconds(ttl_seconds)
     now = int(time.time())
     header = {"alg": "HS256", "typ": "QRT", "v": 1}
     body = {
         "iat": now,
-        "exp": now + ttl_seconds,
+        "exp": now + int(ttl_seconds),
         "jti": uuid.uuid4().hex,
         "data": payload,
     }
@@ -117,6 +143,7 @@ def verify(
         TokenRevokedError: is_revoked callback reported this token as revoked
         UnsupportedTokenVersionError: token header ``v`` is not supported
     """
+    _assert_secret(secret)
     try:
         header_b64, body_b64, signature = token.split(".")
     except ValueError:
@@ -130,7 +157,11 @@ def verify(
     # Version is inside the signed header — check only after the signature matches.
     _assert_supported_version(header_b64)
 
-    body = json.loads(_b64url_decode(body_b64))
+    try:
+        body = json.loads(_b64url_decode(body_b64))
+    except (json.JSONDecodeError, ValueError) as e:
+        raise InvalidSignatureError("Malformed token body") from e
+    _assert_token_body(body)
 
     if int(time.time()) > body["exp"]:
         raise TokenExpiredError(f"Token expired at {body['exp']}")

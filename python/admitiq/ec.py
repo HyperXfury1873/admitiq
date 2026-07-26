@@ -19,6 +19,8 @@ from .core import (
     TokenExpiredError,
     TokenRevokedError,
     _assert_supported_version,
+    _assert_ttl_seconds,
+    _assert_token_body,
     _b64url_decode,
     _b64url_encode,
 )
@@ -59,6 +61,9 @@ def generate_keypair() -> Tuple[str, str]:
 
 def issue(payload: Dict[str, Any], ttl_seconds: int, private_key_pem: str) -> str:
     """Create a token signed with an EC private key (algorithm: ES256)."""
+    _assert_ttl_seconds(ttl_seconds)
+    if not isinstance(private_key_pem, str) or len(private_key_pem) == 0:
+        raise InvalidSignatureError("EC private key PEM must be a non-empty string")
     try:
         from cryptography.hazmat.primitives import hashes, serialization
         from cryptography.hazmat.primitives.asymmetric import ec
@@ -76,7 +81,7 @@ def issue(payload: Dict[str, Any], ttl_seconds: int, private_key_pem: str) -> st
     header = {"alg": "ES256", "typ": "QRT", "v": 1}
     body = {
         "iat": now,
-        "exp": now + ttl_seconds,
+        "exp": now + int(ttl_seconds),
         "jti": uuid.uuid4().hex,
         "data": payload,
     }
@@ -112,7 +117,10 @@ def verify(
 
     public_key = serialization.load_pem_public_key(public_key_pem.encode("ascii"))
     signing_input = f"{header_b64}.{body_b64}".encode()
-    signature = _b64url_decode(signature_b64)
+    try:
+        signature = _b64url_decode(signature_b64)
+    except (ValueError, TypeError) as e:
+        raise InvalidSignatureError("Malformed token signature") from e
 
     try:
         public_key.verify(signature, signing_input, ec.ECDSA(hashes.SHA256()))
@@ -121,7 +129,11 @@ def verify(
 
     _assert_supported_version(header_b64)
 
-    body = json.loads(_b64url_decode(body_b64))
+    try:
+        body = json.loads(_b64url_decode(body_b64))
+    except (json.JSONDecodeError, ValueError) as e:
+        raise InvalidSignatureError("Malformed token body") from e
+    _assert_token_body(body)
 
     if int(time.time()) > body["exp"]:
         raise TokenExpiredError(f"Token expired at {body['exp']}")

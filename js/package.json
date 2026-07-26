@@ -1,6 +1,6 @@
 {
   "name": "admitiq",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "AdmitiQ: signed, expiring, revocable tokens for QR codes and ticket links. https://admitiq.logiclitz.org",
   "main": "src/index.js",
   "files": [

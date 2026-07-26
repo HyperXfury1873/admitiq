@@ -14,6 +14,8 @@ const {
   TokenExpiredError,
   TokenRevokedError,
   assertSupportedVersion,
+  assertTtlSeconds,
+  assertTokenBody,
 } = require("./core");
 
 function b64urlEncode(buffer) {
@@ -50,6 +52,10 @@ function generateKeypair() {
  * @param {string} privateKeyPem
  */
 function issue(payload, ttlSeconds, privateKeyPem) {
+  assertTtlSeconds(ttlSeconds);
+  if (typeof privateKeyPem !== "string" || privateKeyPem.length === 0) {
+    throw new InvalidSignatureError("EC private key PEM must be a non-empty string");
+  }
   const now = Math.floor(Date.now() / 1000);
   const header = { alg: "ES256", typ: "QRT", v: 1 };
   const body = {
@@ -95,7 +101,13 @@ async function verify(token, publicKeyPem, isRevoked) {
 
   assertSupportedVersion(headerB64);
 
-  const body = JSON.parse(b64urlDecode(bodyB64).toString("utf-8"));
+  let body;
+  try {
+    body = JSON.parse(b64urlDecode(bodyB64).toString("utf-8"));
+  } catch {
+    throw new InvalidSignatureError("Malformed token body");
+  }
+  assertTokenBody(body);
   const now = Math.floor(Date.now() / 1000);
   if (now > body.exp) {
     throw new TokenExpiredError(`Token expired at ${body.exp}`);

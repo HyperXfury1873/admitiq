@@ -62,3 +62,36 @@ def test_verify_with_secrets_all_fail():
     token = issue({"ticket_id": "abc123"}, ttl_seconds=60, secret=SECRET)
     with pytest.raises(InvalidSignatureError):
         verify_with_secrets(token, secrets=["a", "b"])
+
+
+def test_rejects_empty_secret():
+    with pytest.raises(InvalidSignatureError):
+        issue({"ticket_id": "x"}, ttl_seconds=60, secret="")
+
+
+def test_rejects_non_finite_ttl():
+    with pytest.raises(InvalidSignatureError):
+        issue({"ticket_id": "x"}, ttl_seconds=float("nan"), secret=SECRET)
+    with pytest.raises(InvalidSignatureError):
+        issue({"ticket_id": "x"}, ttl_seconds=float("inf"), secret=SECRET)
+
+
+def test_rejects_token_missing_exp():
+    import base64
+    import hashlib
+    import hmac
+    import json
+    import time
+
+    def b64(data: bytes) -> str:
+        return base64.urlsafe_b64encode(data).rstrip(b"=").decode("ascii")
+
+    header = {"alg": "HS256", "typ": "QRT", "v": 1}
+    body = {"iat": int(time.time()), "jti": "abc", "data": {"x": 1}}
+    hb = b64(json.dumps(header, separators=(",", ":")).encode())
+    bb = b64(json.dumps(body, separators=(",", ":")).encode())
+    si = f"{hb}.{bb}".encode()
+    sig = b64(hmac.new(SECRET.encode(), si, hashlib.sha256).digest())
+    tok = f"{hb}.{bb}.{sig}"
+    with pytest.raises(InvalidSignatureError):
+        verify(tok, secret=SECRET)

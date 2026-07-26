@@ -70,10 +70,15 @@ See [delivering-tokens.md](delivering-tokens.md).
 
 ## Single-use
 
+Prefer an **atomic consume** when two scanners can hit at once. Check-then-mark
+can admit two concurrent scans.
+
 ```javascript
 const used = new Set();
 
 const payload = await verify(token, SECRET, (jti) => used.has(jti));
+// single-process only — not race-safe across workers:
+if (used.has(payload.jti)) throw new Error("already used");
 used.add(payload.jti);
 ```
 
@@ -81,7 +86,7 @@ used.add(payload.jti);
 
 ```javascript
 const { createClient } = require("redis");
-const { verify } = require("admitiq");
+const { verify, TokenRevokedError } = require("admitiq");
 const { RedisRevocationStore } = require("admitiq/stores/redisStore");
 
 const client = createClient({ url: "redis://localhost:6379" });
@@ -89,7 +94,9 @@ await client.connect();
 const store = new RedisRevocationStore({ client });
 
 const payload = await verify(token, SECRET, store.isRevoked.bind(store));
-await store.markUsed(payload.jti);
+// Admit only if THIS call won the SET NX race:
+const first = await store.markUsed(payload.jti);
+if (!first) throw new TokenRevokedError(`Token ${payload.jti} has been revoked`);
 ```
 
 ## Key rotation

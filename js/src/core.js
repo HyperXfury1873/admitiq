@@ -29,6 +29,31 @@ function b64urlDecode(str) {
   return Buffer.from(padded, "base64");
 }
 
+function assertSecret(secret) {
+  if (typeof secret !== "string" || secret.length === 0) {
+    throw new InvalidSignatureError("HMAC secret must be a non-empty string");
+  }
+}
+
+function assertTtlSeconds(ttlSeconds) {
+  if (typeof ttlSeconds !== "number" || !Number.isFinite(ttlSeconds)) {
+    throw new InvalidSignatureError("ttlSeconds must be a finite number");
+  }
+}
+
+/** Validate signed body claims after signature verification. */
+function assertTokenBody(body) {
+  if (!body || typeof body !== "object") {
+    throw new InvalidSignatureError("Malformed token body");
+  }
+  if (typeof body.exp !== "number" || !Number.isFinite(body.exp)) {
+    throw new InvalidSignatureError("Token missing valid exp claim");
+  }
+  if (typeof body.jti !== "string" || body.jti.length === 0) {
+    throw new InvalidSignatureError("Token missing valid jti claim");
+  }
+}
+
 function sign(message, secret) {
   const digest = crypto.createHmac("sha256", secret).update(message).digest();
   return b64urlEncode(digest);
@@ -58,6 +83,8 @@ function assertSupportedVersion(headerB64) {
  * @returns {string} compact token string, safe to encode directly into a QR code
  */
 function issue(payload, ttlSeconds, secret) {
+  assertSecret(secret);
+  assertTtlSeconds(ttlSeconds);
   const now = Math.floor(Date.now() / 1000);
   const header = { alg: "HS256", typ: "QRT", v: 1 };
   const body = {
@@ -83,6 +110,7 @@ function issue(payload, ttlSeconds, secret) {
  * @throws {InvalidSignatureError|TokenExpiredError|TokenRevokedError|UnsupportedTokenVersionError}
  */
 async function verify(token, secret, isRevoked) {
+  assertSecret(secret);
   const parts = typeof token === "string" ? token.split(".") : [];
   if (parts.length !== 3) {
     throw new InvalidSignatureError("Malformed token: expected 3 dot-separated parts");
@@ -103,7 +131,13 @@ async function verify(token, secret, isRevoked) {
   // Version is inside the signed header — check only after the signature matches.
   assertSupportedVersion(headerB64);
 
-  const body = JSON.parse(b64urlDecode(bodyB64).toString("utf-8"));
+  let body;
+  try {
+    body = JSON.parse(b64urlDecode(bodyB64).toString("utf-8"));
+  } catch {
+    throw new InvalidSignatureError("Malformed token body");
+  }
+  assertTokenBody(body);
 
   const now = Math.floor(Date.now() / 1000);
   if (now > body.exp) {
@@ -154,6 +188,9 @@ module.exports = {
   verifyWithSecrets,
   SUPPORTED_VERSIONS,
   assertSupportedVersion,
+  assertSecret,
+  assertTtlSeconds,
+  assertTokenBody,
   AdmitiqError,
   TokenExpiredError,
   InvalidSignatureError,

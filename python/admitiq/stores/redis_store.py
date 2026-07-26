@@ -13,11 +13,12 @@ from typing import Optional
 
 class RedisRevocationStore:
     """
-    Usage:
+    Usage (atomic consume — admit only if mark_used returns True)::
+
         store = RedisRevocationStore(url="redis://localhost:6379/0")
         payload = verify(token, secret=SECRET, is_revoked=store.is_revoked)
-        # only after you've decided to actually honor this scan:
-        store.mark_used(payload["jti"])
+        if not store.mark_used(payload["jti"]):
+            raise TokenRevokedError("already used")
     """
 
     def __init__(

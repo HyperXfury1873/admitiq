@@ -60,3 +60,29 @@ test("verifyWithSecrets rejects when no secret matches", async () => {
     InvalidSignatureError
   );
 });
+
+test("rejects empty HMAC secret", () => {
+  assert.throws(() => issue({ ticketId: "x" }, 60, ""), InvalidSignatureError);
+});
+
+test("rejects non-finite ttlSeconds", () => {
+  assert.throws(() => issue({ ticketId: "x" }, NaN, SECRET), InvalidSignatureError);
+  assert.throws(() => issue({ ticketId: "x" }, Infinity, SECRET), InvalidSignatureError);
+});
+
+test("rejects token missing exp claim", async () => {
+  const crypto = require("crypto");
+  function b64urlEncode(buffer) {
+    return buffer.toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function sign(message, secret) {
+    return b64urlEncode(crypto.createHmac("sha256", secret).update(message).digest());
+  }
+  const header = { alg: "HS256", typ: "QRT", v: 1 };
+  const body = { iat: Math.floor(Date.now() / 1000), jti: "abc", data: { x: 1 } };
+  const hb = b64urlEncode(Buffer.from(JSON.stringify(header)));
+  const bb = b64urlEncode(Buffer.from(JSON.stringify(body)));
+  const si = `${hb}.${bb}`;
+  const tok = `${si}.${sign(si, SECRET)}`;
+  await assert.rejects(() => verify(tok, SECRET), InvalidSignatureError);
+});

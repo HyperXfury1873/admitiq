@@ -70,6 +70,9 @@ See [delivering-tokens.md](delivering-tokens.md).
 
 ## Single-use (remember used tickets)
 
+Prefer an **atomic consume** when two scanners can hit at once. Check-then-mark
+(`verify` then `add`) can admit two concurrent scans.
+
 ```python
 used = set()
 
@@ -77,18 +80,23 @@ def already_used(jti: str) -> bool:
     return jti in used
 
 payload = verify(token, secret=SECRET, is_revoked=already_used)
-used.add(payload["jti"])  # mark used after you accept the scan
+# single-process only — not race-safe across workers:
+if payload["jti"] in used:
+    raise SystemExit("already used")
+used.add(payload["jti"])
 ```
 
 ## Redis store (multiple servers)
 
 ```python
-from admitiq import verify
+from admitiq import verify, TokenRevokedError
 from admitiq.stores import RedisRevocationStore
 
 store = RedisRevocationStore(url="redis://localhost:6379/0")
 payload = verify(token, secret=SECRET, is_revoked=store.is_revoked)
-store.mark_used(payload["jti"])
+# Admit only if THIS call won the SET NX race:
+if not store.mark_used(payload["jti"]):
+    raise TokenRevokedError(f"Token {payload['jti']} has been revoked")
 ```
 
 ## Key rotation
