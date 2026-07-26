@@ -45,7 +45,7 @@ don't start Phase 2 infrastructure work until Phase 1 is actually published and 
 - [x] Write 2-3 real usage examples beyond the README (Express ticket-check, Flask attendance,
       cross-language scripts in `examples/`)
 - [x] Project site domain: **https://admitiq.logiclitz.org** (LogicLitz subdomain)
-- [x] Multi-page landing + SEO assets in `admitiq-landing/` (deploy via GitHub Pages workflow + CNAME)
+- [x] Multi-page landing + SEO assets in `admitiq-landing/` (GitHub Pages live; custom domain `admitiq.logiclitz.org`)
 
 ## Phase 2 — Launch and get initial adoption
 
