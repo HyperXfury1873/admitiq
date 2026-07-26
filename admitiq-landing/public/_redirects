@@ -1,16 +1,16 @@
-/* SPA fallback for static hosts (Cloudflare Pages / Netlify) */
-/*           /index.html   200
-/why         /index.html   200
-/about       /index.html   200
-/privacy     /index.html   200
-/tutorial    /index.html   200
-/use-cases   /index.html   200
-/getting-started /index.html 200
-/python      /index.html   200
-/javascript  /index.html   200
-/security    /index.html   200
-/for-agents  /index.html   200
-/compare     /index.html   200
-/faq         /index.html   200
-/guides/*    /index.html   200
-/*           /index.html   200
+/* SPA fallback for static hosts (Cloudflare Pages / Netlify / Hostinger-compatible) */
+/debugger           /index.html   200
+/why                /index.html   200
+/about              /index.html   200
+/privacy            /index.html   200
+/tutorial           /index.html   200
+/use-cases          /index.html   200
+/getting-started    /index.html   200
+/python             /index.html   200
+/javascript         /index.html   200
+/security           /index.html   200
+/for-agents         /index.html   200
+/compare            /index.html   200
+/faq                /index.html   200
+/guides/*           /index.html   200
+/*                  /index.html   200

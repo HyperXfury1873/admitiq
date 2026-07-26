@@ -1,0 +1,13 @@
+# AdmitiQ SPA — Hostinger / Apache
+# Serves index.html for client-side routes (/tutorial, /debugger, …)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# Optional: keep 404 soft for hosts that ignore rewrite
+ErrorDocument 404 /index.html

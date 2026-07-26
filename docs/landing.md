@@ -16,7 +16,17 @@ Quiet precision: Instrument Serif + Manrope, mist field, teal accent (`#0F5C61`)
 4. At your DNS provider for `logiclitz.org`, add a **CNAME** record:
    - Name: `admitiq`
    - Target: `HyperXfury1873.github.io` (or the Pages URL GitHub shows)
-5. Wait for DNS + TLS; verify `/`, `/why`, `/robots.txt`, `/sitemap.xml`.
+5. **Do not** point `admitiq` at Hostinger A/AAAA records. If `admitiq.logiclitz.org`
+   resolves to Hostinger (`hcdn`) instead of GitHub Pages, deep links like `/tutorial`
+   will 404 even though the home page works. Remove those Hostinger records for the
+   `admitiq` subdomain only.
+6. Wait for DNS + TLS; verify `/`, `/tutorial`, `/debugger`, `/why`, `/robots.txt`.
+
+### If you keep Hostinger file hosting instead of Pages
+
+Upload the contents of `admitiq-landing/dist/` (including **`.htaccess`**) to the
+`admitiq` subdomain document root. The `.htaccess` rewrites unknown paths to
+`index.html` so React Router routes work.
 
 Local build:
 
