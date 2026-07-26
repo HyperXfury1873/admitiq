@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id        String   @id @default(cuid())
+  name      String
+  tier      String   @default("free") // free | starter | growth
+  createdAt DateTime @default(now())
+  apiKeys   ApiKey[]
+  events    RevocationEvent[]
+  usage     UsageMonth[]
+}
+
+model ApiKey {
+  id         String   @id @default(cuid())
+  keyHash    String   @unique
+  prefix     String
+  projectId  String
+  project    Project  @relation(fields: [projectId], references: [id])
+  createdAt  DateTime @default(now())
+  revokedAt  DateTime?
+}
+
+/// jti-only revocation ledger — never store token payloads
+model RevocationEvent {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+  jti       String
+  action    String // revoke | check
+  outcome   String // revoked | fresh | already_revoked
+  createdAt DateTime @default(now())
+
+  @@unique([projectId, jti])
+  @@index([projectId, createdAt])
+}
+
+model UsageMonth {
+  id        String @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+  yearMonth String // YYYY-MM
+  checks    Int    @default(0)
+  revokes   Int    @default(0)
+
+  @@unique([projectId, yearMonth])
+}

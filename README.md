@@ -1,14 +1,19 @@
 # AdmitiQ
 
+[![CI](https://github.com/HyperXfury1873/admitiq/actions/workflows/ci.yml/badge.svg)](https://github.com/HyperXfury1873/admitiq/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/admitiq.svg)](https://pypi.org/project/admitiq/)
+[![npm](https://img.shields.io/npm/v/admitiq.svg)](https://www.npmjs.com/package/admitiq)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 **A [LogicLitz](https://logiclitz.org) open-source project.**
 
 > Signed, expiring, revocable tokens for QR codes and links — so a scan can prove a code is real, still valid, and hasn’t already been used.
 
 | | |
 |--|--|
-| **Try the interactive tutorial** | **https://hyperxfury1873.github.io/admitiq/** |
+| **Try the interactive tutorial** | **https://admitiq.logiclitz.org** |
 | **Python** | [`pip install admitiq`](https://pypi.org/project/admitiq/) |
-| **JavaScript** | `npm install admitiq` (publish steps in [PUBLISH.md](PUBLISH.md) if the package is not live yet) |
+| **JavaScript** | [`npm install admitiq`](https://www.npmjs.com/package/admitiq) |
 | **Source** | https://github.com/HyperXfury1873/admitiq |
 | **For AI assistants** | [llms.txt](llms.txt) |
 
@@ -56,7 +61,7 @@ const payload = await verify(token, "your-secret-key");
 console.log(payload.data); // { ticketId: "abc123" }
 ```
 
-Prefer learning visually? Open the [landing tutorial](https://hyperxfury1873.github.io/admitiq/) (issue → QR/URL → scan → tamper).
+Prefer learning visually? Open the [landing tutorial](https://admitiq.logiclitz.org) (issue → QR/URL → scan → tamper).
 
 ---
 
@@ -90,22 +95,23 @@ admitiq/
   js/              # npm package (admitiq)
   docs/            # Beginner-friendly documentation
   examples/        # Express, Flask, cross-language demos
-  admitiq-landing/ # Interactive tutorial (GitHub Pages)
+  admitiq-landing/ # Multi-page React site (build → dist → admitiq.logiclitz.org)
   landing/         # Mirror of AdmitiQLanding.jsx
   llms.txt         # Machine-readable “when / how to use”
   SECURITY.md      # Threat model, rotation, privacy
   PUBLISH.md       # Maintainer: publish to npm + PyPI
 ```
 
-Local landing preview:
+Local site preview / production build:
 
 ```bash
 cd admitiq-landing
 npm install
-npm run dev
+npm run dev      # local
+npm run build    # outputs dist/ for https://admitiq.logiclitz.org
 ```
 
-How Pages hosting works: [docs/landing.md](docs/landing.md).
+How hosting works: [docs/landing.md](docs/landing.md).
 
 ---
 

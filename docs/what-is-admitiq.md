@@ -25,7 +25,7 @@ npm install admitiq
 ```
 
 Interactive walkthrough (issue, QR, scan, tamper):  
-**https://hyperxfury1873.github.io/admitiq/**
+**https://admitiq.logiclitz.org**
 
 ## Simple picture
 

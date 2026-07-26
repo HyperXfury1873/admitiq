@@ -24,5 +24,9 @@ admitiq-landing/dist/
 
 # Secrets (never commit)
 *Recovery-Codes*
+*recovery_codes*
 .npmrc
+hosted/.env
+hosted/prisma/*.db
+hosted/prisma/*.db-journal
 

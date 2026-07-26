@@ -1,7 +1,7 @@
 {
   "name": "admitiq",
-  "version": "0.3.1",
-  "description": "AdmitiQ: signed, expiring, revocable tokens for QR codes and links. No AI, no required server.",
+  "version": "0.3.3",
+  "description": "AdmitiQ: signed, expiring, revocable tokens for QR codes and ticket links. https://admitiq.logiclitz.org",
   "main": "src/index.js",
   "files": [
     "src",
@@ -12,7 +12,8 @@
     "./ec": "./src/ec.js",
     "./express": "./src/express.js",
     "./url": "./src/url.js",
-    "./stores/redisStore": "./src/stores/redisStore.js"
+    "./stores/redisStore": "./src/stores/redisStore.js",
+    "./stores/hostedStore": "./src/stores/hostedStore.js"
   },
   "scripts": {
     "test": "node --test tests/core.test.js tests/ec.test.js tests/url.test.js"
@@ -24,14 +25,19 @@
     "tokens",
     "tickets",
     "attendance",
-    "coupons"
+    "coupons",
+    "hmac",
+    "signed-url",
+    "single-use",
+    "admitiq",
+    "expiring-token"
   ],
   "license": "MIT",
   "author": {
     "name": "LogicLitz",
     "url": "https://logiclitz.org"
   },
-  "homepage": "https://hyperxfury1873.github.io/admitiq/",
+  "homepage": "https://admitiq.logiclitz.org",
   "engines": {
     "node": ">=16"
   },

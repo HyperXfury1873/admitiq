@@ -1,11 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// Project Pages URL: https://hyperxfury1873.github.io/admitiq/
-const base = process.env.GITHUB_PAGES === '1' ? '/admitiq/' : '/'
-
+// Static SPA — no backend. Served at https://admitiq.logiclitz.org
 export default defineConfig({
-  base,
+  base: '/',
   plugins: [react()],
   optimizeDeps: {
     include: ['qrcode'],

@@ -3,7 +3,7 @@
 **Goal:** create a token, verify it, and understand the result — in under 5 minutes.
 
 **Prefer a visual tour?** Open the interactive tutorial first:  
-→ **https://hyperxfury1873.github.io/admitiq/**
+→ **https://admitiq.logiclitz.org**
 
 ---
 

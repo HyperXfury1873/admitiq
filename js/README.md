@@ -1,10 +1,13 @@
 # AdmitiQ (JavaScript / Node)
 
+[![npm](https://img.shields.io/npm/v/admitiq.svg)](https://www.npmjs.com/package/admitiq)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../LICENSE)
+
 **A [LogicLitz](https://logiclitz.org) open-source project.**
 
 Signed, expiring, revocable tokens for QR codes and links.
 
-> New here? Start with the [interactive tutorial](https://hyperxfury1873.github.io/admitiq/) or [../docs/what-is-admitiq.md](../docs/what-is-admitiq.md).
+> New here? Start with the [interactive tutorial](https://admitiq.logiclitz.org) or [../docs/what-is-admitiq.md](../docs/what-is-admitiq.md).
 
 ## Install
 

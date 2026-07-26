@@ -4,13 +4,25 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "admitiq"
-version = "0.3.1"
-description = "AdmitiQ: signed, expiring, revocable tokens for QR codes and links. No AI, no required server."
+version = "0.3.3"
+description = "AdmitiQ: signed, expiring, revocable tokens for QR codes and ticket links. https://admitiq.logiclitz.org"
 readme = "README.md"
 requires-python = ">=3.8"
 license = { text = "MIT" }
 authors = [{ name = "LogicLitz" }]
-keywords = ["qr", "qrcode", "security", "tokens", "tickets", "attendance", "coupons"]
+keywords = [
+  "qr",
+  "qrcode",
+  "security",
+  "tokens",
+  "tickets",
+  "attendance",
+  "coupons",
+  "hmac",
+  "signed-url",
+  "single-use",
+  "admitiq",
+]
 dependencies = []
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -25,7 +37,7 @@ redis = ["redis>=4.5"]
 dev = ["pytest>=7.0", "fastapi>=0.100", "flask>=2.3", "httpx>=0.24"]
 
 [project.urls]
-Homepage = "https://hyperxfury1873.github.io/admitiq/"
+Homepage = "https://admitiq.logiclitz.org"
 Documentation = "https://github.com/HyperXfury1873/admitiq/tree/main/docs"
 Repository = "https://github.com/HyperXfury1873/admitiq"
 Issues = "https://github.com/HyperXfury1873/admitiq/issues"

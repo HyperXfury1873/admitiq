@@ -26,15 +26,12 @@ don't start Phase 2 infrastructure work until Phase 1 is actually published and 
 - [x] Redis-backed revocation store, both languages — tested against a real Redis instance,
       including the actual "second scan gets blocked" reuse scenario
 - [x] `SECURITY.md` — honest threat-model writeup (what's protected, what explicitly isn't)
-- [x] Developer-facing landing page (see `landing/` folder)
+- [x] Developer-facing landing page (see `admitiq-landing/`)
 
 ## Phase 1 — Get it published and real
 
 - [x] **Repo structure decision: monorepo.** One `HyperXfury1873/admitiq` repo with `python/`,
-      `js/`, shared `SECURITY.md` / PRD / landing. Cross-language compatibility is the
-      product differentiator — splitting into two repos would split issues, CI, and the
-      security doc that both packages must stay aligned with. Publish to PyPI and npm from
-      the same tree (two packages, one source of truth).
+      `js/`, shared `SECURITY.md` / PRD / landing.
 - [x] Create the public GitHub repo (`HyperXfury1873/admitiq`) and push this monorepo
 - [x] Add a root-level `LICENSE` file (MIT, matches what's declared in packaging metadata)
 - [x] Add a top-level `README.md` for the monorepo that links to both language-specific READMEs
@@ -42,21 +39,17 @@ don't start Phase 2 infrastructure work until Phase 1 is actually published and 
 - [x] Newbie-friendly `docs/` + root `PUBLISH.md` (npm + PyPI step-by-step)
 - [x] First-class key rotation helpers (`verify_with_secrets` / `verifyWithSecrets`, EC equivalents)
 - [x] Token wire-format version gate (`v` / `UnsupportedTokenVersionError`)
-- [ ] Register and publish to PyPI: see `PUBLISH.md` (`python -m build && twine upload`)
-- [ ] Register and publish to npm: see `PUBLISH.md` (`npm publish`)
-- [ ] Add badges to both READMEs: build status, license, npm/pip version
+- [x] Register and publish to PyPI (`admitiq` — see https://pypi.org/project/admitiq/)
+- [x] Register and publish to npm (`admitiq` — see https://www.npmjs.com/package/admitiq)
+- [x] Add badges to both READMEs: build status, license, npm/pip version
 - [x] Write 2-3 real usage examples beyond the README (Express ticket-check, Flask attendance,
       cross-language scripts in `examples/`)
-- [ ] Decide on and register the project domain (e.g. admitiq.dev) even before the hosted API exists —
-      use it to host the landing page (already built, see `landing/`) and docs in the meantime
-- [ ] Deploy the landing page (`landing/AdmitiQLanding.jsx`) somewhere real — Vercel/Netlify are
-      the fastest path for a static React page like this
-      (local Vite preview exists under `admitiq-landing/`)
+- [x] Project site domain: **https://admitiq.logiclitz.org** (LogicLitz subdomain)
+- [x] Multi-page landing + SEO assets in `admitiq-landing/` (deploy via GitHub Pages workflow + CNAME)
 
 ## Phase 2 — Launch and get initial adoption
 
-- [ ] Write a genuine, technical launch post: "Why QR codes need signatures" or similar —
-      explain the actual problem, not just "we built a thing"
+- [x] Draft launch post: [`docs/launch-post.md`](docs/launch-post.md) — “Why a QR code is not a ticket”
 - [ ] Post to Hacker News (Show HN), r/programming, r/node, r/Python, dev.to
 - [ ] Submit to Product Hunt, Peerlist, PeerPush — this audience is a strong match for a dev tool
 - [ ] Respond to every comment/issue in the first two weeks — early credibility compounds
@@ -64,19 +57,16 @@ don't start Phase 2 infrastructure work until Phase 1 is actually published and 
 
 ## Phase 3 — Hosted revocation API (the actual revenue layer)
 
-- [ ] Design the API: `POST /v1/verify` (given a token + your secret, returns validity +
-      revocation status), `POST /v1/revoke` (mark a jti as used/revoked)
-- [ ] Implement privacy rules from SECURITY.md: do not log/retain raw `data` payloads;
-      meter and revoke on `jti` + outcome only
-- [ ] Decide auth model for the hosted API (API key per project)
-- [ ] Build with your existing stack: Node/Express + Prisma + Supabase (matches your other
-      LogicLitz products, no new stack to learn)
-- [ ] Add a thin SDK method in both the pip and npm packages: an optional `is_revoked` helper
-      that calls the hosted API, so self-hosted and hosted usage share the same interface
-- [ ] Implement metering/usage tracking per API key (needed before you can bill anyone)
-- [ ] Integrate Stripe for the paid tiers (Starter/Growth from the PRD pricing table)
-- [ ] Set a genuinely generous free tier (1,000 verifications/month) — the free tier's job is
-      adoption, not maximizing early revenue
+- [x] Design the API: `POST /v1/check`, `POST /v1/revoke`, `GET /v1/usage` — see `hosted/openapi.yaml`
+- [x] Implement privacy rules: jti + outcome only (`hosted/prisma/schema.prisma`)
+- [x] Auth model: Bearer API keys (`aq_live_…`) with bootstrap env + hashed DB keys
+- [x] Service scaffold: Express + Prisma (SQLite locally; point `DATABASE_URL` at Postgres in prod) in `hosted/`
+- [x] SDK stores: `HostedRevocationStore` in Python + JS
+- [x] Metering per project/month + free-tier limit
+- [x] Stripe Checkout stub (`hosted/src/stripe.js`) — wire price IDs in `.env` to go live
+- [ ] Deploy hosted API to production hostname (e.g. `api.admitiq.logiclitz.org`)
+- [ ] Create Stripe Products/Prices and enable paid checkout
+- [ ] Publish library version that exports hosted stores to PyPI/npm (0.3.3+)
 
 ## Phase 4 — Dashboard and analytics (Growth tier)
 

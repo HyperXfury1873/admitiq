@@ -1,0 +1,65 @@
+openapi: 3.0.3
+info:
+  title: AdmitiQ Hosted Revocation API
+  version: 0.1.0
+  description: >
+    Optional jti check/revoke API. Do not send token payloads — only jti.
+servers:
+  - url: https://api.admitiq.logiclitz.org
+  - url: http://localhost:8787
+paths:
+  /health:
+    get:
+      summary: Liveness
+      responses:
+        "200":
+          description: OK
+  /v1/check:
+    post:
+      summary: Check whether a jti is revoked
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [jti]
+              properties:
+                jti:
+                  type: string
+      responses:
+        "200":
+          description: Check result
+  /v1/revoke:
+    post:
+      summary: Mark a jti as revoked/used
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [jti]
+              properties:
+                jti:
+                  type: string
+      responses:
+        "200":
+          description: Revoke result
+  /v1/usage:
+    get:
+      summary: Current month usage for this API key
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Usage summary
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

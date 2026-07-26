@@ -19,7 +19,7 @@ npm install admitiq
 | Package name | `admitiq` on both PyPI and npm |
 | Python live? | Yes — https://pypi.org/project/admitiq/ |
 | JavaScript live? | Check https://www.npmjs.com/package/admitiq |
-| Interactive demo | https://hyperxfury1873.github.io/admitiq/ |
+| Interactive demo | https://admitiq.logiclitz.org |
 | Source | https://github.com/HyperXfury1873/admitiq |
 
 ## Why publish fails (cheat sheet)
@@ -36,5 +36,5 @@ npm install admitiq
 - PyPI: https://pypi.org  
 - TestPyPI: https://test.pypi.org  
 - npm: https://www.npmjs.com  
-- Landing / tutorial: https://hyperxfury1873.github.io/admitiq/  
+- Landing / tutorial: https://admitiq.logiclitz.org  
 - LogicLitz: https://logiclitz.org

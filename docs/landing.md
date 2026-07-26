@@ -1,49 +1,43 @@
-# AdmitiQ landing page (interactive tutorial)
+# AdmitiQ website (static React)
 
-The landing page is a small React app that teaches AdmitiQ with a live demo: issue tokens, show QR / URL, scan, and see tamper / reuse fail.
+**Live:** https://admitiq.logiclitz.org
 
-## View it online (recommended)
+Frontend-only Vite + React SPA. No backend required.
 
-After GitHub Pages is enabled (one-time setup below), open:
+## Design
 
-**https://hyperxfury1873.github.io/admitiq/**
+Quiet precision: Instrument Serif + Manrope, mist field, teal accent (`#0F5C61`), glass panels, restrained motion.
 
-That URL is the best “try before you install” link for humans and for README / PyPI / npm pages.
+## Deploy to https://admitiq.logiclitz.org
 
-## Run it on your computer
+1. Push `main` — GitHub Actions workflow [`.github/workflows/pages.yml`](../.github/workflows/pages.yml) builds `admitiq-landing` and deploys to GitHub Pages.
+2. In the repo: **Settings → Pages → Source = GitHub Actions**.
+3. Custom domain: `admitiq.logiclitz.org` (CNAME file is in `public/CNAME`).
+4. At your DNS provider for `logiclitz.org`, add a **CNAME** record:
+   - Name: `admitiq`
+   - Target: `HyperXfury1873.github.io` (or the Pages URL GitHub shows)
+5. Wait for DNS + TLS; verify `/`, `/why`, `/robots.txt`, `/sitemap.xml`.
+
+Local build:
 
 ```powershell
-cd D:\LogicLitz_Projects\qrlock\qrlock\admitiq-landing
+cd admitiq-landing
 npm install
-npm run dev
+npm run build   # → dist/
 ```
 
-Open the local URL Vite prints (usually `http://localhost:5173`).
+## Crawler / SEO files (copied into dist)
 
-Source of truth for the UI:
+| File | Purpose |
+|------|---------|
+| `robots.txt` | Allow humans + major AI crawlers |
+| `sitemap.xml` | All routes |
+| `llms.txt` | LLM / agent install guidance |
+| `agents.txt` | Short agent policy |
+| `humans.txt` | Credits |
+| `.well-known/security.txt` | Security contact |
+| `_redirects` / `404.html` / `web.config` | SPA fallbacks |
 
-- Editable app: `admitiq-landing/src/AdmitiQLanding.jsx`
-- Mirror copy: `landing/AdmitiQLanding.jsx` (keep in sync if you edit either)
+## Pages
 
-## One-time: turn on GitHub Pages
-
-1. Open https://github.com/HyperXfury1873/admitiq/settings/pages  
-2. Under **Build and deployment** → **Source**, choose **GitHub Actions**  
-3. Push to `main` (the workflow `.github/workflows/pages.yml` builds `admitiq-landing` and deploys it)
-
-Or trigger manually:
-
-```powershell
-gh workflow run pages.yml
-```
-
-## Share the landing everywhere
-
-Put this link in:
-
-- GitHub repo **About** → Website  
-- PyPI project description / README  
-- npm `homepage` field (already pointed at the Pages URL when published)  
-- Social posts and demos  
-
-Humans get a visual tutorial; AI assistants and crawlers that follow README links can discover install + usage from the same place.
+Home, Tutorial (8 live demos), Use cases (8 sectors / 35+ scenarios), Getting started, Python, JavaScript, Security, For agents, Compare, FAQ.

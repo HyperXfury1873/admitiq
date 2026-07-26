@@ -29,8 +29,6 @@ jobs:
           cache-dependency-path: admitiq-landing/package-lock.json
       - name: Install and build
         working-directory: admitiq-landing
-        env:
-          GITHUB_PAGES: "1"
         run: |
           npm ci
           npm run build

@@ -1,0 +1,5 @@
+Contact: https://logiclitz.org
+Preferred-Languages: en
+Canonical: https://admitiq.logiclitz.org
+Policy: https://github.com/HyperXfury1873/admitiq/blob/main/SECURITY.md
+Expires: 2027-12-31T23:59:59.000Z

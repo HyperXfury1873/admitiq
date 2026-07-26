@@ -6,7 +6,7 @@ This guide is for **maintainers** who want `pip install admitiq` and `npm instal
 
 | Registry | Package | Status |
 |----------|---------|--------|
-| PyPI | [`admitiq`](https://pypi.org/project/admitiq/) | Published (`0.3.1`) |
+| PyPI | [`admitiq`](https://pypi.org/project/admitiq/) | Published (`0.3.2`) |
 | npm | `admitiq` | Not published yet (see § npm troubleshooting) |
 | TestPyPI | practice only | Optional |
 
@@ -16,7 +16,7 @@ This guide is for **maintainers** who want `pip install admitiq` and `npm instal
 
 1. Repo is public: https://github.com/HyperXfury1873/admitiq  
 2. CI is green on `main`  
-3. Version matches everywhere (currently **0.3.1**):
+3. Version matches everywhere (currently **0.3.2**):
    - `python/pyproject.toml` → `version`
    - `python/admitiq/__init__.py` → `__version__`
    - `js/package.json` → `version`
@@ -53,7 +53,7 @@ When prompted:
 Verify:
 
 ```powershell
-pip install admitiq==0.3.1
+pip install admitiq==0.3.2
 python -c "from admitiq import issue, verify; print(verify(issue({'ok': True}, 60, 's'), secret='s')['data'])"
 ```
 
@@ -155,11 +155,11 @@ Package page will be: https://www.npmjs.com/package/admitiq
 1. Tag the release:
 
 ```powershell
-git tag v0.3.1
-git push origin v0.3.1
+git tag v0.3.2
+git push origin v0.3.2
 ```
 
-2. Confirm the [interactive landing](https://hyperxfury1873.github.io/admitiq/) is deployed (GitHub Pages — see `docs/landing.md`).  
+2. Confirm the [interactive landing](https://admitiq.logiclitz.org) is live (frontend-only static site — see `docs/landing.md`).
 3. Announce (optional): HN / Product Hunt — see `TASKS.md`.
 
 ---

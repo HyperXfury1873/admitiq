@@ -1,0 +1,13 @@
+/* TEAM */
+LogicLitz
+Site: https://admitiq.logiclitz.org
+Org: https://logiclitz.org
+Source: https://github.com/HyperXfury1873/admitiq
+
+/* THANKS */
+Fonts: Instrument Serif, Manrope, IBM Plex Mono
+
+/* SITE */
+Standards: HTML5, React, Vite
+Doctype: HTML
+Component: AdmitiQ open-source token library
