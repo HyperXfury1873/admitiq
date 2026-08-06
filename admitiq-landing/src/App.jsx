@@ -18,6 +18,12 @@ import SecureQrGuide from "./pages/guides/SecureQrGuide.jsx";
 import SingleUseQrGuide from "./pages/guides/SingleUseQrGuide.jsx";
 import ExpiringTicketsGuide from "./pages/guides/ExpiringTicketsGuide.jsx";
 import TokenDebugger from "./pages/TokenDebugger.jsx";
+import HostedApi from "./pages/HostedApi.jsx";
+import Pricing from "./pages/Pricing.jsx";
+import CloudSecurity from "./pages/CloudSecurity.jsx";
+import TermsCloud from "./pages/TermsCloud.jsx";
+import CloudPrivacy from "./pages/CloudPrivacy.jsx";
+import DpaSubprocessors from "./pages/DpaSubprocessors.jsx";
 import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
@@ -32,6 +38,12 @@ export default function App() {
             <Route path="privacy" element={<Privacy />} />
             <Route path="tutorial" element={<Tutorial />} />
             <Route path="debugger" element={<TokenDebugger />} />
+            <Route path="hosted-api" element={<HostedApi />} />
+            <Route path="pricing" element={<Pricing />} />
+            <Route path="cloud-security" element={<CloudSecurity />} />
+            <Route path="terms-cloud" element={<TermsCloud />} />
+            <Route path="cloud-privacy" element={<CloudPrivacy />} />
+            <Route path="dpa-subprocessors" element={<DpaSubprocessors />} />
             <Route path="use-cases" element={<UseCases />} />
             <Route path="getting-started" element={<GettingStarted />} />
             <Route path="python" element={<PythonPage />} />

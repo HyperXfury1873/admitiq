@@ -2,6 +2,7 @@ const crypto = require("crypto");
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
+const JTI_MAX_LEN = 256;
 
 function yearMonth(d = new Date()) {
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
@@ -62,6 +63,46 @@ async function withinQuota(project) {
   return { ok: used < tierLimit(project.tier), used, limit: tierLimit(project.tier) };
 }
 
+function normalizeJti(input) {
+  const jti = String(input || "").trim().normalize("NFKC");
+  if (!jti) return { ok: false, code: "jti_required", message: "jti is required" };
+  if (jti.length > JTI_MAX_LEN) {
+    return { ok: false, code: "jti_too_long", message: `jti exceeds ${JTI_MAX_LEN} chars` };
+  }
+  return { ok: true, value: jti };
+}
+
+function errorShape(code, message, requestId, retryable = false, details = undefined) {
+  return {
+    error: {
+      code,
+      message,
+      retryable,
+      request_id: requestId,
+      ...(details ? { details } : {}),
+    },
+  };
+}
+
+async function consumeJti(projectId, jti) {
+  try {
+    await prisma.revocationEvent.create({
+      data: {
+        projectId,
+        jti,
+        action: "consume",
+        outcome: "consumed",
+      },
+    });
+    return { first: true, state: "consumed" };
+  } catch (err) {
+    if (String(err.code) === "P2002") {
+      return { first: false, state: "already_consumed" };
+    }
+    throw err;
+  }
+}
+
 module.exports = {
   prisma,
   hashKey,
@@ -70,4 +111,7 @@ module.exports = {
   withinQuota,
   yearMonth,
   tierLimit,
+  normalizeJti,
+  errorShape,
+  consumeJti,
 };

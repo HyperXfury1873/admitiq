@@ -1320,11 +1320,59 @@ code,
   color: var(--ink);
 }
 
-.aq-footer-bottom {
+.aq-footer-badges {
   width: min(var(--max), 100%);
   margin: 36px auto 0;
-  padding-top: 20px;
+  padding-top: 24px;
   border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.aq-footer-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.58);
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.aq-footer-badge:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+  box-shadow: 0 8px 24px rgba(18, 21, 26, 0.08);
+}
+
+.aq-footer-badge:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.aq-footer-badge img {
+  display: block;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.aq-footer-badge-peerlist img {
+  width: auto;
+  height: 60px;
+}
+
+.aq-footer-bottom {
+  width: min(var(--max), 100%);
+  margin: 20px auto 0;
+  padding-top: 20px;
   text-align: center;
   font-size: 0.8rem;
 }

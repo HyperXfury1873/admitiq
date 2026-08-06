@@ -1,16 +1,23 @@
-# AdmitiQ Hosted Revocation API
+# AdmitiQ Hosted Revocation API (Public Prototype)
 
 Optional convenience API for multi-scanner single-use / revoke without self-hosted Redis.
 
 The free `admitiq` library does **not** require this service. Hosted features are opt-in.
 
+This folder is a **public MIT prototype**. Commercial production implementation
+should live in a separate private repository. See `docs/hosted-api/boundary.md`.
+
 ## Endpoints
 
 | Method | Path | Purpose |
 |--------|------|---------|
-| `POST` | `/v1/check` | Is this `jti` revoked? |
-| `POST` | `/v1/revoke` | Mark `jti` used/revoked (idempotent) |
+| `POST` | `/v1/tokens/consume` | Atomic first-use consume |
+| `POST` | `/v1/tokens/check` | Is this `jti` revoked? |
+| `POST` | `/v1/tokens/revoke` | Mark `jti` revoked (idempotent) |
+| `POST` | `/v1/tokens/unrevoke` | Remove revoked state |
 | `GET` | `/v1/usage` | Metering summary for the API key |
+| `GET` | `/v1/analytics` | Aggregate outcomes |
+| `POST` | `/v1/billing/checkout` | Stripe checkout session (if configured) |
 | `GET` | `/health` | Liveness |
 
 Auth: `Authorization: Bearer <api_key>` (keys start with `aq_live_`).

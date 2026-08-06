@@ -1,9 +1,10 @@
 openapi: 3.0.3
 info:
   title: AdmitiQ Hosted Revocation API
-  version: 0.1.0
+  version: 0.2.0
   description: >
-    Optional jti check/revoke API. Do not send token payloads — only jti.
+    Optional jti coordination API for single-use and revocation.
+    Do not send token payloads — only jti identifiers.
 servers:
   - url: https://api.admitiq.logiclitz.org
   - url: http://localhost:8787
@@ -14,52 +15,352 @@ paths:
       responses:
         "200":
           description: OK
-  /v1/check:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+  /health/live:
+    get:
+      summary: Liveness probe
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+  /health/ready:
+    get:
+      summary: Readiness probe
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+  /v1/tokens/consume:
     post:
-      summary: Check whether a jti is revoked
+      summary: Atomically consume a token identifier
       security:
         - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required: [jti]
-              properties:
-                jti:
-                  type: string
+              $ref: "#/components/schemas/JtiRequest"
+      responses:
+        "200":
+          description: Consume result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsumeResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/QuotaExceeded"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /v1/tokens/check:
+    post:
+      summary: Check whether a token identifier is revoked
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JtiRequest"
       responses:
         "200":
           description: Check result
-  /v1/revoke:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/QuotaExceeded"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /v1/tokens/revoke:
     post:
-      summary: Mark a jti as revoked/used
+      summary: Revoke a token identifier
       security:
         - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required: [jti]
-              properties:
-                jti:
-                  type: string
+              $ref: "#/components/schemas/JtiRequest"
       responses:
         "200":
           description: Revoke result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RevokeResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/QuotaExceeded"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /v1/tokens/unrevoke:
+    post:
+      summary: Remove revoked state for a token identifier
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JtiRequest"
+      responses:
+        "200":
+          description: Unrevoke result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnrevokeResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalError"
   /v1/usage:
     get:
       summary: Current month usage for this API key
       security:
         - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
       responses:
         "200":
           description: Usage summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsageResponse"
+  /v1/analytics:
+    get:
+      summary: Aggregate token event analytics
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
+      responses:
+        "200":
+          description: Analytics summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalyticsResponse"
+  /v1/billing/checkout:
+    post:
+      summary: Create Stripe checkout session
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckoutRequest"
+      responses:
+        "200":
+          description: Checkout session link
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "501":
+          description: Billing not configured
 components:
+  parameters:
+    RequestId:
+      in: header
+      name: x-request-id
+      required: false
+      schema:
+        type: string
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    Unauthorized:
+      description: Missing/invalid API key
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    QuotaExceeded:
+      description: Monthly quota exceeded
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        service:
+          type: string
+    JtiRequest:
+      type: object
+      required: [jti]
+      properties:
+        jti:
+          type: string
+          minLength: 1
+          maxLength: 256
+    CheckResponse:
+      type: object
+      properties:
+        jti:
+          type: string
+        revoked:
+          type: boolean
+        state:
+          type: string
+          enum: [fresh, revoked]
+        usage:
+          type: object
+          properties:
+            used:
+              type: integer
+            limit:
+              type: integer
+    RevokeResponse:
+      type: object
+      properties:
+        jti:
+          type: string
+        revoked:
+          type: boolean
+        first:
+          type: boolean
+        state:
+          type: string
+          enum: [revoked, already_revoked]
+    ConsumeResponse:
+      type: object
+      properties:
+        jti:
+          type: string
+        first:
+          type: boolean
+        admitted:
+          type: boolean
+        state:
+          type: string
+          enum: [consumed, already_consumed]
+    UnrevokeResponse:
+      type: object
+      properties:
+        jti:
+          type: string
+        unrevoked:
+          type: boolean
+        state:
+          type: string
+          enum: [fresh]
+    UsageResponse:
+      type: object
+      properties:
+        tier:
+          type: string
+        yearMonth:
+          type: string
+        ok:
+          type: boolean
+        used:
+          type: integer
+        limit:
+          type: integer
+    AnalyticsResponse:
+      type: object
+      properties:
+        yearMonth:
+          type: string
+        checks:
+          type: integer
+        revokes:
+          type: integer
+        outcomes:
+          type: object
+          additionalProperties:
+            type: integer
+    CheckoutRequest:
+      type: object
+      properties:
+        tier:
+          type: string
+          enum: [starter, growth]
+        successUrl:
+          type: string
+        cancelUrl:
+          type: string
+    CheckoutResponse:
+      type: object
+      properties:
+        url:
+          type: string
+        id:
+          type: string
+    ErrorEnvelope:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            retryable:
+              type: boolean
+            request_id:
+              type: string
+            details:
+              type: object

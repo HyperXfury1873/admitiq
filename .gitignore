@@ -31,3 +31,9 @@ hosted/.env
 hosted/prisma/*.db
 hosted/prisma/*.db-journal
 
+# Proprietary cloud lives in a separate private repo
+admitiq-cloud/
+
+# Proprietary cloud lives in a private repo — do not publish from this monorepo
+admitiq-cloud/
+

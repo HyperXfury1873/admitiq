@@ -58,6 +58,8 @@ export const FOOTER_COLUMNS = [
       { to: "/use-cases", label: "Use cases" },
       { to: "/tutorial", label: "Tutorial" },
       { to: "/debugger", label: "Token playground" },
+      { to: "/hosted-api", label: "Hosted API" },
+      { to: "/pricing", label: "Pricing" },
       { to: "/getting-started", label: "Getting started" },
       { to: "/faq", label: "FAQ" },
     ],
@@ -70,6 +72,7 @@ export const FOOTER_COLUMNS = [
       { to: "/guides/expiring-tickets", label: "Expiring tickets" },
       { to: "/compare", label: "vs plain QR & JWT" },
       { to: "/security", label: "Security" },
+      { to: "/cloud-security", label: "Cloud security" },
     ],
   },
   {
@@ -77,6 +80,9 @@ export const FOOTER_COLUMNS = [
     links: [
       { to: "/about", label: "About" },
       { to: "/privacy", label: "Privacy" },
+      { to: "/cloud-privacy", label: "Cloud privacy" },
+      { to: "/terms-cloud", label: "Cloud terms" },
+      { to: "/dpa-subprocessors", label: "DPA/subprocessors" },
       { href: "https://logiclitz.org", label: "LogicLitz", external: true },
       { href: "https://github.com/HyperXfury1873/admitiq", label: "GitHub", external: true },
     ],

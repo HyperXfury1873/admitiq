@@ -6,6 +6,12 @@
   <url><loc>https://admitiq.logiclitz.org/privacy</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
   <url><loc>https://admitiq.logiclitz.org/tutorial</loc><changefreq>weekly</changefreq><priority>0.95</priority></url>
   <url><loc>https://admitiq.logiclitz.org/debugger</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://admitiq.logiclitz.org/hosted-api</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://admitiq.logiclitz.org/pricing</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://admitiq.logiclitz.org/cloud-security</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://admitiq.logiclitz.org/terms-cloud</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://admitiq.logiclitz.org/cloud-privacy</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://admitiq.logiclitz.org/dpa-subprocessors</loc><changefreq>monthly</changefreq><priority>0.55</priority></url>
   <url><loc>https://admitiq.logiclitz.org/use-cases</loc><changefreq>weekly</changefreq><priority>0.95</priority></url>
   <url><loc>https://admitiq.logiclitz.org/getting-started</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://admitiq.logiclitz.org/python</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>

@@ -47,13 +47,18 @@ class HostedRevocationStore {
   }
 
   async markUsed(jti) {
-    const data = await this._post("/v1/revoke", { jti });
+    const data = await this._post("/v1/tokens/consume", { jti });
     return Boolean(data.first);
   }
 
   async isRevoked(jti) {
-    const data = await this._post("/v1/check", { jti });
+    const data = await this._post("/v1/tokens/check", { jti });
     return Boolean(data.revoked);
+  }
+
+  async unrevoke(jti) {
+    const data = await this._post("/v1/tokens/unrevoke", { jti });
+    return Boolean(data.unrevoked);
   }
 }
 

@@ -54,9 +54,13 @@ class HostedRevocationStore:
             raise RuntimeError(data.get("error") or f"hosted_http_{e.code}") from e
 
     def mark_used(self, jti: str) -> bool:
-        data = self._post("/v1/revoke", {"jti": jti})
+        data = self._post("/v1/tokens/consume", {"jti": jti})
         return bool(data.get("first"))
 
     def is_revoked(self, jti: str) -> bool:
-        data = self._post("/v1/check", {"jti": jti})
+        data = self._post("/v1/tokens/check", {"jti": jti})
         return bool(data.get("revoked"))
+
+    def unrevoke(self, jti: str) -> bool:
+        data = self._post("/v1/tokens/unrevoke", {"jti": jti})
+        return bool(data.get("unrevoked"))
